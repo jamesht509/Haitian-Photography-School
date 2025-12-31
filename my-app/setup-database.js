@@ -52,8 +52,12 @@ async function setupDatabase() {
 }
 
 // Set the database URL from command line or environment
-process.env.POSTGRES_URL = process.env.POSTGRES_URL || 
-  'postgresql://neondb_owner:npg_jrsJu2S1aDmg@ep-proud-night-ad2ucb2w-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require';
+// Make sure to set POSTGRES_URL environment variable before running this script
+if (!process.env.POSTGRES_URL) {
+  console.error('❌ POSTGRES_URL environment variable is not set!');
+  console.error('Set it like: POSTGRES_URL="your-neon-connection-string" node setup-database.js');
+  process.exit(1);
+}
 
 setupDatabase();
 

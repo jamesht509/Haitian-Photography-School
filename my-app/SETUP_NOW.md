@@ -5,9 +5,9 @@
 Crie um arquivo chamado `.env.local` na pasta `my-app/` com este conteúdo:
 
 ```env
-POSTGRES_URL="postgresql://neondb_owner:npg_jrsJu2S1aDmg@ep-proud-night-ad2ucb2w-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require"
-POSTGRES_URL_NON_POOLING="postgresql://neondb_owner:npg_jrsJu2S1aDmg@ep-proud-night-ad2ucb2w-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require"
-ADMIN_PASSWORD="HPS2025_Admin!"
+POSTGRES_URL="your-neon-postgres-url-here"
+POSTGRES_URL_NON_POOLING="your-neon-postgres-url-here"
+ADMIN_PASSWORD="your-secure-password-here"
 ```
 
 **Como criar:**
@@ -39,7 +39,7 @@ Ou use seu editor preferido (VS Code, etc.)
 ```bash
 cd /Users/Ryan/HPS/Haitian-Photography-School/my-app
 
-psql 'postgresql://neondb_owner:npg_jrsJu2S1aDmg@ep-proud-night-ad2ucb2w-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require' < schema.sql
+psql 'your-neon-connection-string-here' < schema.sql
 ```
 
 ---
@@ -55,7 +55,7 @@ npm run dev
 
 Abra no navegador:
 - **Landing Page:** http://localhost:3000
-- **Admin Dashboard:** http://localhost:3000/admin (senha: `HPS2025_Admin!`)
+- **Admin Dashboard:** http://localhost:3000/admin (senha: sua senha do ADMIN_PASSWORD)
 
 ---
 
@@ -80,7 +80,7 @@ Abra no navegador:
 → Execute o `schema.sql` no Neon Console (Passo 2)
 
 ### "Admin login not working"
-→ Use a senha: `HPS2025_Admin!` (com maiúsculas e símbolo)
+→ Use a senha que você definiu no ADMIN_PASSWORD (com maiúsculas e símbolos)
 
 ---
 
