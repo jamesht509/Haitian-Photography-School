@@ -1,0 +1,10 @@
+{
+  "env": {
+    "POSTGRES_URL": "@postgres_url",
+    "POSTGRES_URL_NON_POOLING": "@postgres_url_non_pooling",
+    "ADMIN_PASSWORD": "@admin_password"
+  },
+  "regions": ["iad1"],
+  "framework": "nextjs"
+}
+

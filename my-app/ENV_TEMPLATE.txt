@@ -1,0 +1,22 @@
+# ============================================
+# ENVIRONMENT VARIABLES TEMPLATE
+# ============================================
+# Create a file named .env.local and copy these lines
+# Then fill in your actual values
+# ============================================
+
+POSTGRES_URL="postgres://username:password@hostname/database?sslmode=require"
+POSTGRES_URL_NON_POOLING="postgres://username:password@hostname/database?sslmode=require"
+ADMIN_PASSWORD="changeme123"
+
+# ============================================
+# INSTRUCTIONS
+# ============================================
+# 
+# 1. Copy this content to a new file named .env.local
+# 2. Get your database URLs from https://console.neon.tech
+# 3. Change ADMIN_PASSWORD to something secure
+# 4. Never commit .env.local to git (it's already in .gitignore)
+# 5. For Vercel, add these in Settings → Environment Variables
+#
+

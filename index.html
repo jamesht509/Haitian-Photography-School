@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="ht">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haitian Photography School - Vin yon fotograf pwofesyonèl</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'dark-bg': '#050505',
+                        'gold': '#D4AF37',
+                        'gold-light': '#E6B800',
+                        'gold-dark': '#B8860B',
+                    },
+                    fontFamily: {
+                        'serif': ['Playfair Display', 'serif'],
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .parallax-bg {
+            background-image: url('https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=2000&h=1200&fit=crop&crop=center');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .glassmorphism {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .gradient-gold {
+            background: linear-gradient(135deg, #D4AF37 0%, #E6B800 50%, #B8860B 100%);
+        }
+
+        .text-shadow {
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .hover-lift {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 3D Book Preview Styles */
+        .book-3d-container {
+            perspective: 1500px;
+        }
+
+        .book-page {
+            transform-style: preserve-3d;
+            backface-visibility: hidden;
+        }
+
+        .book-page-flip-enter {
+            animation: pageFlipIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        .book-page-flip-exit {
+            animation: pageFlipOut 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes pageFlipIn {
+            0% {
+                transform: rotateY(90deg) scale(0.9);
+                opacity: 0;
+            }
+            100% {
+                transform: rotateY(0deg) scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes pageFlipOut {
+            0% {
+                transform: rotateY(0deg) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: rotateY(-90deg) scale(0.9);
+                opacity: 0;
+            }
+        }
+
+        .chapter-item {
+            transition: all 0.3s ease;
+        }
+
+        .chapter-item.active {
+            background: rgba(212, 175, 55, 0.15);
+            border-color: rgba(212, 175, 55, 0.5);
+        }
+
+        .chapter-item:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .progress-bar-fill {
+            transition: width 0.5s ease-out;
+        }
+
+        .page-number-large {
+            font-family: 'Playfair Display', serif;
+            background: linear-gradient(135deg, #D4AF37, #B8860B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .content-animate {
+            animation: contentFadeIn 0.4s ease-out forwards;
+            animation-delay: var(--delay, 0ms);
+            opacity: 0;
+        }
+
+        @keyframes contentFadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .divider-animate {
+            animation: dividerExpand 0.5s ease-out forwards;
+            animation-delay: 0.4s;
+            transform: scaleX(0);
+            transform-origin: left;
+        }
+
+        @keyframes dividerExpand {
+            to {
+                transform: scaleX(1);
+            }
+        }
+
+        .nav-button {
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover:not(:disabled) {
+            background: #D4AF37;
+            color: #050505;
+        }
+
+        .nav-button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .glow-effect {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            pointer-events: none;
+        }
+
+        /* Mastery Section Styles */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .bento-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .mastery-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mastery-card:hover {
+            border-color: rgba(212, 175, 55, 0.5);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px -10px rgba(212, 175, 55, 0.2);
+        }
+
+        /* Logistics Section Styles */
+        .date-glow {
+            position: relative;
+            z-index: 1;
+        }
+
+        .date-glow::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120%;
+            height: 120%;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, transparent 70%);
+            z-index: -1;
+            filter: blur(40px);
+        }
+
+        .highlight-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .highlight-item:hover {
+            background: rgba(212, 175, 55, 0.05);
+            border-color: rgba(212, 175, 55, 0.2);
+        }
+
+        /* Success Modal Styles */
+        .success-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #050505;
+            z-index: 9999;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .success-modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .progress-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 999px;
+            overflow: visible;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 90%;
+            background: linear-gradient(90deg, #D4AF37, #E6B800);
+            border-radius: 999px;
+            position: relative;
+            animation: progressPulse 2s ease-in-out infinite;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+        }
+
+        @keyframes progressPulse {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+            }
+            50% {
+                box-shadow: 0 0 40px rgba(212, 175, 55, 0.9);
+            }
+        }
+
+        .whatsapp-btn {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            transition: all 0.3s ease;
+            animation: buttonPulse 2s ease-in-out infinite;
+        }
+
+        .whatsapp-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 40px rgba(37, 211, 102, 0.4);
+        }
+
+        @keyframes buttonPulse {
+            0%, 100% {
+                box-shadow: 0 5px 30px rgba(37, 211, 102, 0.3);
+            }
+            50% {
+                box-shadow: 0 10px 50px rgba(37, 211, 102, 0.5);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-dark-bg text-white font-sans overflow-x-hidden">
+    <!-- Success Modal -->
+    <div id="successModal" class="success-modal flex items-center justify-center p-4">
+        <div class="max-w-4xl w-full">
+            <!-- Progress Bar Section -->
+            <div class="mb-12 fade-in-up" style="animation-delay: 0.2s;">
+                <p class="text-center text-gold font-semibold mb-4 text-lg">
+                    Enskripsyon ou prèske fini!
+                </p>
+                <div class="progress-container mx-auto">
+                    <div class="progress-fill"></div>
+                </div>
+                <p class="text-center text-gray-400 mt-3 text-sm">
+                    90% konplè
+                </p>
+            </div>
+
+            <!-- Main Content -->
+            <div class="glassmorphism rounded-3xl p-8 md:p-12 text-center fade-in-up" style="animation-delay: 0.4s;">
+                <!-- Icon -->
+                <div class="w-20 h-20 rounded-full bg-gold/20 flex items-center justify-center mx-auto mb-6">
+                    <svg class="w-10 h-10 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+
+                <!-- Headline -->
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-white mb-6">
+                    Sèlman yon dènye etap ki manke...
+                </h2>
+
+                <!-- Instruction -->
+                <p class="text-lg sm:text-xl text-gray-300 leading-relaxed max-w-2xl mx-auto mb-6">
+                    Pou enskripsyon ou an konfime <span class="text-gold font-bold">100%</span>, ou dwe antre nan gwoup WhatsApp elèv yo kounye a. Se la n ap voye kote klas la ap fèt la ak tout liv gratis yo.
+                </p>
+
+                <!-- Progress Note -->
+                <div class="bg-gold/10 border border-gold/30 rounded-xl p-4 max-w-xl mx-auto mb-8">
+                    <p class="text-gold font-semibold">
+                        📊 Kounye a ou nan 90%. Antre nan gwoup la pou w rive nan 100%.
+                    </p>
+                </div>
+
+                <!-- WhatsApp Button -->
+                <a 
+                    href="https://tyn.bio/Class8Janvye" 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="whatsapp-btn inline-flex items-center gap-3 text-white font-bold px-10 py-6 rounded-2xl text-xl"
+                >
+                    <!-- WhatsApp Icon -->
+                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                    </svg>
+                    <span>Antre nan Gwoup WhatsApp la Kounye a</span>
+                </a>
+
+                <!-- Additional Info -->
+                <p class="text-gray-500 text-sm mt-6">
+                    Klike sou bouton an pou w resevwa tout enfòmasyon yo
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section with Parallax -->
+    <section class="relative h-screen flex items-center justify-center parallax-bg">
+        <!-- Dark Overlay -->
+        <div class="absolute inset-0 bg-black bg-opacity-60"></div>
+
+        <!-- Content Container -->
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <!-- Left Content -->
+                <div class="text-left lg:text-left">
+                    <!-- Main Headline -->
+                    <h1 class="text-4xl sm:text-5xl lg:text-7xl font-serif font-bold mb-6 text-shadow leading-tight">
+                        <span class="text-white">Sispann reve,</span><br>
+                        <span class="text-gold">kòmanse tire!</span><br>
+                        <span class="text-white text-3xl sm:text-4xl lg:text-5xl">Vin yon fotograf pwofesyonèl.</span>
+                    </h1>
+
+                    <!-- Sub-headline -->
+                    <p class="text-lg sm:text-xl lg:text-2xl mb-6 text-gray-300 font-light leading-relaxed max-w-2xl">
+                        Valè klas sa a se <span class="text-gold font-bold">$497</span>, men enskripsyon an <span class="text-gold font-bold">GRATIS</span> jodi a. Aprann teknik avanse nan Boston ak modèl pwofesyonèl.
+                    </p>
+
+                    <!-- CTA Button -->
+                    <button class="gradient-gold text-dark-bg font-bold px-8 py-4 rounded-lg hover:opacity-90 transition-opacity duration-300 text-lg shadow-lg hover-lift">
+                        Enskri Gratis Kounye a
+                    </button>
+
+                    <!-- Trust Note -->
+                    <p class="text-sm text-gray-400 mt-4 max-w-2xl">
+                        Pa bezwen depo kounye a. Rezève plas ou sèlman.
+                    </p>
+                </div>
+
+                <!-- Registration Form -->
+                <div class="lg:pl-8">
+                    <div class="glassmorphism rounded-2xl p-8 max-w-md mx-auto hover-lift">
+                        <h2 class="text-2xl font-serif font-bold mb-6 text-center text-gold">
+                            Rezève Klas ou
+                        </h2>
+
+                        <form class="space-y-6">
+                            <!-- Full Name -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">
+                                    Non konplè
+                                </label>
+                                <input
+                                    type="text"
+                                    name="name"
+                                    class="w-full px-4 py-3 bg-white bg-opacity-10 border border-gray-600 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent text-white placeholder-gray-400 transition-all duration-300"
+                                    placeholder="Antre non ou konplè"
+                                    required
+                                >
+                            </div>
+
+                            <!-- WhatsApp -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">
+                                    WhatsApp
+                                </label>
+                                <input
+                                    type="tel"
+                                    name="whatsapp"
+                                    class="w-full px-4 py-3 bg-white bg-opacity-10 border border-gray-600 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent text-white placeholder-gray-400 transition-all duration-300"
+                                    placeholder="+1 (XXX) XXX-XXXX"
+                                    required
+                                >
+                            </div>
+
+                            <!-- Email -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">
+                                    Email
+                                </label>
+                                <input
+                                    type="email"
+                                    name="email"
+                                    class="w-full px-4 py-3 bg-white bg-opacity-10 border border-gray-600 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent text-white placeholder-gray-400 transition-all duration-300"
+                                    placeholder="email@ou.com"
+                                    required
+                                >
+                            </div>
+
+                            <!-- City -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">
+                                    Vil kote w rete
+                                </label>
+                                <input
+                                    type="text"
+                                    name="city"
+                                    class="w-full px-4 py-3 bg-white bg-opacity-10 border border-gray-600 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent text-white placeholder-gray-400 transition-all duration-300"
+                                    placeholder="Boston, MA"
+                                    required
+                                >
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button
+                                type="submit"
+                                class="w-full gradient-gold text-dark-bg font-bold py-4 px-6 rounded-lg hover:opacity-90 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-lg"
+                            >
+                                Enskri Gratis Kounye a
+                            </button>
+                        </form>
+
+                        <!-- Additional Info -->
+                        <p class="text-xs text-gray-400 text-center mt-4">
+                            * Valè $497 - Enskripsyon gratis - Pa gen depo
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <svg class="w-6 h-6 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- 3D Book Preview Section -->
+    <section id="book-preview" class="py-24 bg-dark-bg relative overflow-hidden">
+        <!-- Subtle background pattern -->
+        <div class="absolute inset-0 opacity-5">
+            <div class="absolute inset-0" style="background-image: radial-gradient(circle at 2px 2px, #D4AF37 1px, transparent 0); background-size: 40px 40px;"></div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <!-- Section Header -->
+            <div class="text-center mb-16">
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold mb-4">
+                    <span class="text-white">Gade yon </span>
+                    <span class="text-gold">previzyon</span>
+                    <span class="text-white"> liv fotografi an</span>
+                </h2>
+                <p class="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto">
+                    Men 5 paj esklizif ou ka li kounye a.
+                </p>
+            </div>
+
+            <!-- Split View Container -->
+            <div class="grid lg:grid-cols-[320px_1fr] gap-8 items-start">
+                
+                <!-- Left: Index / Chapter List -->
+                <div class="relative">
+                    <div class="glassmorphism rounded-2xl p-6 lg:sticky lg:top-8">
+                        <!-- Index Header -->
+                        <div class="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
+                            <div class="w-10 h-10 rounded-full gradient-gold flex items-center justify-center">
+                                <svg class="w-5 h-5 text-dark-bg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-white font-bold text-lg">Tablo Konteni</h3>
+                                <p class="text-gray-500 text-sm">5 Chapit Esansyèl</p>
+                            </div>
+                        </div>
+
+                        <!-- Chapter List -->
+                        <nav id="chapter-nav" class="space-y-2">
+                            <!-- Chapters will be injected by JavaScript -->
+                        </nav>
+
+                        <!-- Progress Bar -->
+                        <div class="mt-6 pt-4 border-t border-white/10">
+                            <div class="flex justify-between text-sm text-gray-500 mb-2">
+                                <span>Pwogrè</span>
+                                <span id="progress-text">1 / 5</span>
+                            </div>
+                            <div class="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                                <div id="progress-bar" class="h-full gradient-gold rounded-full progress-bar-fill" style="width: 20%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: 3D Book Content -->
+                <div class="book-3d-container relative">
+                    <!-- Glassmorphism Book Container -->
+                    <div class="glassmorphism rounded-2xl overflow-hidden relative">
+                        <!-- Book Page Content -->
+                        <div id="book-content" class="book-page">
+                            <!-- Content will be injected by JavaScript -->
+                        </div>
+
+                        <!-- Navigation Arrows -->
+                        <div class="absolute top-1/2 -translate-y-1/2 left-4 right-4 flex justify-between pointer-events-none z-20">
+                            <button id="prev-btn" class="nav-button pointer-events-auto w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white" disabled>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                </svg>
+                            </button>
+                            <button id="next-btn" class="nav-button pointer-events-auto w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Decorative Glow Effects -->
+                    <div class="glow-effect -bottom-8 -right-8 w-32 h-32 bg-gold/10"></div>
+                    <div class="glow-effect -top-8 -left-8 w-24 h-24 bg-gold/5"></div>
+                </div>
+            </div>
+
+            <!-- CTA Below -->
+            <div class="text-center mt-16">
+                <p class="text-gray-400 mb-4">Ou vle aprann tout sa?</p>
+                <button class="gradient-gold text-dark-bg font-semibold px-8 py-4 rounded-lg hover:opacity-90 transition-all duration-300 shadow-lg hover-lift transform hover:scale-105">
+                    Enskri Gratis Kounye a
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing & Payment Section -->
+    <section class="py-24 bg-black relative overflow-hidden">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="glassmorphism rounded-3xl p-8 md:p-12 text-center">
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-white mb-6">
+                    Envesti nan lavni w <span class="text-gold">san presyon</span>
+                </h2>
+                <p class="text-lg sm:text-xl text-gray-300 leading-relaxed max-w-3xl mx-auto mb-8">
+                    Klas la vo <span class="text-gold font-bold text-2xl">$497</span>, men nou rann li fasil pou ou. Ou ka peye an <span class="text-gold font-bold">4 fwa san enterè</span>. Pa gen okenn depo obligatwa pou w rezève plas ou jodi a.
+                </p>
+                <div class="flex flex-wrap justify-center gap-4 mt-8">
+                    <div class="bg-white/5 border border-gold/30 rounded-xl px-6 py-4">
+                        <p class="text-gold font-bold text-2xl">$124.25</p>
+                        <p class="text-gray-400 text-sm">× 4 peman</p>
+                    </div>
+                    <div class="bg-white/5 border border-gold/30 rounded-xl px-6 py-4">
+                        <p class="text-gold font-bold text-2xl">$0</p>
+                        <p class="text-gray-400 text-sm">Depo jodi a</p>
+                    </div>
+                    <div class="bg-white/5 border border-gold/30 rounded-xl px-6 py-4">
+                        <p class="text-gold font-bold text-2xl">0%</p>
+                        <p class="text-gray-400 text-sm">Enterè</p>
+                    </div>
+                </div>
+                <button class="mt-8 gradient-gold text-dark-bg font-bold px-10 py-5 rounded-lg hover:opacity-90 transition-all duration-300 shadow-lg hover-lift transform hover:scale-105 text-xl">
+                    Rezève Plas ou Gratis
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mastery Section (Bento Grid) -->
+    <section class="py-24 bg-dark-bg relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-white mb-4">
+                    Sa w <span class="text-gold">pral aprann</span>
+                </h2>
+                <p class="text-lg text-gray-400 max-w-2xl mx-auto">
+                    5 teknik esansyèl pou w vin yon fotograf pwofesyonèl
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Card 1: Kijan pou kenbe kamera a -->
+                <div class="mastery-card glassmorphism rounded-2xl p-8 flex flex-col h-full">
+                    <div class="w-12 h-12 rounded-xl gradient-gold flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6 text-dark-bg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-serif font-bold text-gold mb-4">Kijan pou kenbe kamera a</h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        Aprann apiyman sou sousi, pozisyon koud, pye, ak jan pou w respire pou foto w pa janm flou.
+                    </p>
+                </div>
+
+                <!-- Card 2: Metrize Istoryam nan -->
+                <div class="mastery-card glassmorphism rounded-2xl p-8 flex flex-col h-full">
+                    <div class="w-12 h-12 rounded-xl gradient-gold flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6 text-dark-bg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-serif font-bold text-gold mb-4">Metrize Istoryam nan</h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        Aprann li Blacks, Shadows, ak Highlights pou w gen yon ekspozisyon pafè chak fwa.
+                    </p>
+                </div>
+
+                <!-- Card 3: Mòd Kamera yo -->
+                <div class="mastery-card glassmorphism rounded-2xl p-8 flex flex-col h-full">
+                    <div class="w-12 h-12 rounded-xl gradient-gold flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6 text-dark-bg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-serif font-bold text-gold mb-4">Mòd Kamera yo</h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        Sispann itilize mòd Auto. Aprann Mòd Manyèl (M), Aperture Priority (Av), ak Shutter Priority (Tv).
+                    </p>
+                </div>
+
+                <!-- Card 4: Fè Foto Fanm -->
+                <div class="mastery-card glassmorphism rounded-2xl p-8 flex flex-col h-full">
+                    <div class="w-12 h-12 rounded-xl gradient-gold flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6 text-dark-bg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-serif font-bold text-gold mb-4">Fè Foto Fanm</h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        Metriz poz pou fanm (Kou, Janm, Zepòl) ak jan pou w fè modèl la santi l alèz.
+                    </p>
+                </div>
+
+                <!-- Card 5: Aprann fè Portraits -->
+                <div class="mastery-card glassmorphism rounded-2xl p-8 flex flex-col h-full">
+                    <div class="w-12 h-12 rounded-xl gradient-gold flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6 text-dark-bg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-serif font-bold text-gold mb-4">Aprann fè Portraits</h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        Teknik koupe foto (Crop) ak jan pou w swiv Règ de Twa (Rule of Thirds).
+                    </p>
+                </div>
+
+                <!-- Card 6: Software & AI (Full Width) -->
+                <div class="mastery-card glassmorphism rounded-2xl p-8 flex flex-col h-full md:col-span-2 lg:col-span-3">
+                    <div class="w-12 h-12 rounded-xl gradient-gold flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6 text-dark-bg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-serif font-bold text-gold mb-4">Edisyon Pwofesyonèl ak AI</h3>
+                    <p class="text-gray-300 leading-relaxed text-lg">
+                        Aprann edisyon pwofesyonèl ak Lightroom, Photoshop, ak Entelijans Atifisyèl (AI). N ap ba w Plugin RA, Actions Ps, ak Presets Lr gratis!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Logistics & Urgency Section -->
+    <section class="py-24 bg-black relative overflow-hidden">
+        <!-- Glow background element -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gold/5 rounded-full blur-[120px] pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <!-- Left: Big Date -->
+                <div class="text-center lg:text-left">
+                    <div class="inline-block px-4 py-1 rounded-full bg-gold/10 border border-gold/20 text-gold text-sm font-bold tracking-widest uppercase mb-6">
+                        Dat la ap pwoche
+                    </div>
+                    <div class="date-glow">
+                        <h2 class="text-6xl sm:text-7xl lg:text-8xl font-serif font-bold text-white leading-none mb-4">
+                            Samdi <br>
+                            <span class="text-gold">10 Janvye</span>
+                        </h2>
+                        <p class="text-3xl font-serif text-white/80">Boston, MA</p>
+                    </div>
+                    <p class="text-xl text-gray-400 mt-8 max-w-lg">
+                        Yon jou sèlman pou w chanje vizyon w sou fotografi.
+                    </p>
+                </div>
+
+                <!-- Right: Highlights -->
+                <div class="space-y-6">
+                    <!-- Highlight 1 -->
+                    <div class="highlight-item">
+                        <div class="w-10 h-10 rounded-full bg-gold flex-shrink-0 flex items-center justify-center text-dark-bg font-bold">1</div>
+                        <p class="text-lg text-gray-200 mt-1">Pratik an dirèk ak bèl modèl pwofesyonèl.</p>
+                    </div>
+
+                    <!-- Highlight 2 -->
+                    <div class="highlight-item">
+                        <div class="w-10 h-10 rounded-full bg-gold flex-shrink-0 flex items-center justify-center text-dark-bg font-bold">2</div>
+                        <p class="text-lg text-gray-200 mt-1">Tout zouti edisyon (Plugins/Actions) yo enkli gratis.</p>
+                    </div>
+
+                    <!-- Highlight 3 -->
+                    <div class="highlight-item">
+                        <div class="w-10 h-10 rounded-full bg-gold flex-shrink-0 flex items-center justify-center text-dark-bg font-bold">3</div>
+                        <p class="text-lg text-gray-200 mt-1">N ap moutre w kijan pou w monte yon <span class="text-gold font-bold">"Kit Bon Mache"</span> pou w kòmanse fè kòb jodi a.</p>
+                    </div>
+
+                    <!-- Urgent CTA -->
+                    <div class="pt-8">
+                        <button class="w-full gradient-gold text-dark-bg font-bold py-5 px-8 rounded-2xl hover:opacity-90 transition-all duration-300 shadow-[0_0_30px_rgba(212,175,55,0.3)] hover:shadow-[0_0_50px_rgba(212,175,55,0.5)] transform hover:scale-[1.02] text-xl">
+                            Enskri Gratis Kounye a
+                        </button>
+                        <p class="text-center text-gray-500 text-sm mt-4">
+                            * Valè $497 - Enskripsyon gratis. Pa gen depo.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us Section -->
+    <section class="py-20 bg-dark-bg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl lg:text-5xl font-serif font-bold text-gold mb-4">
+                    Poukisa chwazi nou?
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    Eksperyans pwofesyonèl ak aprantisaj pratik pou vin yon fotograf eksepsyonèl
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="text-center glassmorphism rounded-xl p-8 hover-lift">
+                    <div class="w-16 h-16 gradient-gold rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-dark-bg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Aprantisaj Rapid</h3>
+                    <p class="text-gray-300">Mètòd akselere pou aprann fotografi pwofesyonèl nan 3 mwa</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="text-center glassmorphism rounded-xl p-8 hover-lift">
+                    <div class="w-16 h-16 gradient-gold rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-dark-bg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Klas an Dirèk</h3>
+                    <p class="text-gray-300">Pratik ak modèl pwofesyonèl chak Samdi gratis</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="text-center glassmorphism rounded-xl p-8 hover-lift">
+                    <div class="w-16 h-16 gradient-gold rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-dark-bg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Edit ak AI</h3>
+                    <p class="text-gray-300">Aprann Lightroom, Photoshop, ak zouti AI pou edit imaj</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h3 class="text-2xl font-serif font-bold text-gold mb-4">
+                Haitian Photography School
+            </h3>
+            <p class="text-gray-400 mb-6">
+                Vin yon fotograf pwofesyonèl nan Boston - Klas gratis chak Samdi
+            </p>
+            <div class="flex justify-center space-x-6">
+                <a href="#" class="text-gold hover:text-gold-light transition-colors">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+                    </svg>
+                </a>
+                <a href="#" class="text-gold hover:text-gold-light transition-colors">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.751.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.746-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24.009c6.624 0 11.99-5.367 11.99-11.987C24.007 5.367 18.641.001 12.017.001z"/>
+                    </svg>
+                </a>
+                <a href="#" class="text-gold hover:text-gold-light transition-colors">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                    </svg>
+                </a>
+            </div>
+            <p class="text-sm text-gray-500 mt-6">
+                © 2025 Haitian Photography School. Tout dwa rezève.
+            </p>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Page Interactions -->
+    <script>
+        // ============================================
+        // BOOK PAGES DATA
+        // ============================================
+        const bookPages = [
+            {
+                id: 1,
+                title: "Fè Foto Fanm",
+                subtitle: "Poz ak Kadraj",
+                description: "Aprann teknik pou fè modèl fi santi yo alèz epi parèt bèl nan foto a. Dekouvri enpòtans kou, zepòl, ak janm nan pozisyon an.",
+                image: '/images/page1-posing.jpg',
+            },
+            {
+                id: 2,
+                title: "Metrize Istoryam nan",
+                subtitle: "Ekspozisyon Kòrèk",
+                description: "Konprann kijan pou li istogram nan pou evite foto ki twò nwa (underexposed) oswa twò klere (overexposed). Jwenn balans pafè a.",
+                image: '/images/page2-histogram.jpg',
+            },
+            {
+                id: 3,
+                title: "Mòd Kamera yo",
+                subtitle: "Soti nan Auto rive Manual",
+                description: "Sispann itilize mòd Auto! Aprann diferans ant Mòd Manyèl (M), Priyorite Ouverture (Av/A), ak Priyorite Vitès (Tv/S).",
+                image: '/images/page3-modes.jpg',
+            },
+            {
+                id: 4,
+                title: "Kijan pou kenbe Kamera a",
+                subtitle: "Estabilite Maksimòm",
+                description: "Evite foto flou. Aprann bon fason pou kenbe kamera a, pozisyon kò w, ak teknik respirasyon pou foto ki pi klè.",
+                image: '/images/page4-holding.jpg',
+            },
+            {
+                id: 5,
+                title: "Règ Pòtrè yo",
+                subtitle: "Koupe ak Konpozisyon",
+                description: "Aprann règ 'Rule of Thirds' la ak ki kote ou pa dwe janm koupe nan kò yon moun lè w ap fè pòtrè pou rezilta pwofesyonèl.",
+                image: '/images/page5-portraits.jpg',
+            },
+        ];
+
+        // ============================================
+        // STATE
+        // ============================================
+        let currentPageIndex = 0;
+
+        // ============================================
+        // DOM ELEMENTS
+        // ============================================
+        const chapterNav = document.getElementById('chapter-nav');
+        const bookContent = document.getElementById('book-content');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+
+        // ============================================
+        // RENDER CHAPTER NAV
+        // ============================================
+        function renderChapterNav() {
+            chapterNav.innerHTML = bookPages.map((page, index) => `
+                <button 
+                    class="chapter-item w-full text-left p-4 rounded-xl border border-transparent ${index === currentPageIndex ? 'active' : ''}"
+                    data-index="${index}"
+                >
+                    <div class="flex items-start gap-3">
+                        <span class="text-2xl font-serif font-bold ${index === currentPageIndex ? 'text-gold' : 'text-gray-600'} transition-colors">
+                            ${String(page.id).padStart(2, '0')}
+                        </span>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="font-semibold ${index === currentPageIndex ? 'text-gold' : 'text-white'} truncate transition-colors">
+                                ${page.title}
+                            </h4>
+                            <p class="text-gray-500 text-sm truncate">${page.subtitle}</p>
+                        </div>
+                        ${index === currentPageIndex ? '<div class="w-2 h-2 rounded-full bg-gold mt-2"></div>' : ''}
+                    </div>
+                </button>
+            `).join('');
+
+            // Add click listeners
+            chapterNav.querySelectorAll('.chapter-item').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const index = parseInt(btn.dataset.index);
+                    if (index !== currentPageIndex) {
+                        navigateToPage(index);
+                    }
+                });
+            });
+        }
+
+        // ============================================
+        // RENDER BOOK CONTENT
+        // ============================================
+        function renderBookContent(animate = true) {
+            const page = bookPages[currentPageIndex];
+            const animateClass = animate ? 'book-page-flip-enter' : '';
+
+            bookContent.innerHTML = `
+                <div class="grid md:grid-cols-2 ${animateClass}">
+                    <!-- Left: Image -->
+                    <div class="relative aspect-[3/4] md:aspect-auto md:h-[500px] overflow-hidden">
+                        <img 
+                            src="${page.image}" 
+                            alt="${page.title}"
+                            class="w-full h-full object-cover"
+                            onerror="this.src='https://placehold.co/600x800/1a1a1a/D4AF37?text=${encodeURIComponent(page.title)}'"
+                        >
+                        <!-- Gradient Overlay -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-dark-bg via-transparent to-transparent md:bg-gradient-to-r"></div>
+                        
+                        <!-- Page Number Badge -->
+                        <div class="absolute top-6 left-6">
+                            <div class="gradient-gold text-dark-bg font-bold px-4 py-2 rounded-lg text-sm">
+                                Paj ${currentPageIndex + 1} / ${bookPages.length}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Content -->
+                    <div class="p-8 md:p-12 flex flex-col justify-center">
+                        <!-- Chapter Number -->
+                        <span class="page-number-large text-6xl md:text-8xl font-bold mb-4 content-animate" style="--delay: 200ms;">
+                            ${String(page.id).padStart(2, '0')}
+                        </span>
+
+                        <!-- Title -->
+                        <h3 class="text-2xl md:text-3xl font-serif font-bold text-white mb-2 content-animate" style="--delay: 300ms;">
+                            ${page.title}
+                        </h3>
+
+                        <!-- Subtitle -->
+                        <p class="text-gold font-medium mb-6 content-animate" style="--delay: 400ms;">
+                            ${page.subtitle}
+                        </p>
+
+                        <!-- Divider -->
+                        <div class="w-16 h-0.5 gradient-gold mb-6 divider-animate"></div>
+
+                        <!-- Description -->
+                        <p class="text-gray-300 leading-relaxed mb-8 content-animate" style="--delay: 500ms;">
+                            ${page.description}
+                        </p>
+
+                        <!-- Read More Button -->
+                        <div class="content-animate" style="--delay: 600ms;">
+                            <button class="inline-flex items-center gap-2 text-gold font-medium group">
+                                <span>Li plis</span>
+                                <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ============================================
+        // UPDATE PROGRESS
+        // ============================================
+        function updateProgress() {
+            const progress = ((currentPageIndex + 1) / bookPages.length) * 100;
+            progressBar.style.width = `${progress}%`;
+            progressText.textContent = `${currentPageIndex + 1} / ${bookPages.length}`;
+        }
+
+        // ============================================
+        // UPDATE NAV BUTTONS
+        // ============================================
+        function updateNavButtons() {
+            prevBtn.disabled = currentPageIndex === 0;
+            nextBtn.disabled = currentPageIndex === bookPages.length - 1;
+        }
+
+        // ============================================
+        // NAVIGATE TO PAGE
+        // ============================================
+        function navigateToPage(index) {
+            if (index < 0 || index >= bookPages.length) return;
+
+            // Add exit animation
+            const currentContent = bookContent.querySelector('.grid');
+            if (currentContent) {
+                currentContent.classList.remove('book-page-flip-enter');
+                currentContent.classList.add('book-page-flip-exit');
+            }
+
+            // Wait for exit animation, then update
+            setTimeout(() => {
+                currentPageIndex = index;
+                renderBookContent(true);
+                renderChapterNav();
+                updateProgress();
+                updateNavButtons();
+            }, 300);
+        }
+
+        // ============================================
+        // EVENT LISTENERS
+        // ============================================
+        prevBtn.addEventListener('click', () => {
+            if (currentPageIndex > 0) {
+                navigateToPage(currentPageIndex - 1);
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentPageIndex < bookPages.length - 1) {
+                navigateToPage(currentPageIndex + 1);
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            // Only trigger if book preview is in view
+            const bookSection = document.getElementById('book-preview');
+            const rect = bookSection.getBoundingClientRect();
+            const isInView = rect.top < window.innerHeight && rect.bottom > 0;
+
+            if (isInView) {
+                if (e.key === 'ArrowLeft' && currentPageIndex > 0) {
+                    navigateToPage(currentPageIndex - 1);
+                } else if (e.key === 'ArrowRight' && currentPageIndex < bookPages.length - 1) {
+                    navigateToPage(currentPageIndex + 1);
+                }
+            }
+        });
+
+        // ============================================
+        // PARALLAX EFFECT
+        // ============================================
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelector('.parallax-bg');
+            const rate = scrolled * -0.5;
+            parallax.style.transform = 'translate3d(0, ' + rate + 'px, 0)';
+        });
+
+        // ============================================
+        // FORM SUBMISSION & SUCCESS MODAL
+        // ============================================
+        function showSuccessModal() {
+            const modal = document.getElementById('successModal');
+            modal.style.display = 'flex';
+            // Trigger reflow to enable transition
+            modal.offsetHeight;
+            modal.classList.add('active');
+            // Disable body scroll
+            document.body.style.overflow = 'hidden';
+        }
+
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+            
+            const form = event.target;
+            const submitButton = form.querySelector('button[type="submit"]');
+            const originalButtonText = submitButton.textContent;
+            
+            // Get form data
+            const formData = new FormData(form);
+            const data = {
+                name: formData.get('name'),
+                whatsapp: formData.get('whatsapp'),
+                email: formData.get('email'),
+                city: formData.get('city')
+            };
+            
+            // Validate
+            if (!data.name || !data.whatsapp || !data.email || !data.city) {
+                alert('Tanpri ranpli tout chan yo');
+                return;
+            }
+            
+            // Update button state
+            submitButton.disabled = true;
+            submitButton.textContent = 'Ap voye...';
+            submitButton.style.opacity = '0.7';
+            
+            try {
+                // Send to API
+                const response = await fetch('/api/leads', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    // Success! Reset form and show success modal
+                    form.reset();
+                    showSuccessModal();
+                    
+                    console.log('✅ Lead captured:', result.data);
+                } else {
+                    throw new Error(result.error || 'Failed to submit');
+                }
+            } catch (error) {
+                console.error('Form submission error:', error);
+                alert('Te gen yon erè. Tanpri eseye ankò oswa kontakte nou sou WhatsApp.');
+            } finally {
+                // Reset button state
+                submitButton.disabled = false;
+                submitButton.textContent = originalButtonText;
+                submitButton.style.opacity = '1';
+            }
+        }
+
+        document.querySelector('form').addEventListener('submit', handleFormSubmit);
+
+        // ============================================
+        // CTA BUTTONS - SCROLL TO FORM
+        // ============================================
+        function scrollToForm() {
+            const form = document.querySelector('form');
+            if (form) {
+                form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                // Focus on first input after scroll
+                setTimeout(() => {
+                    const firstInput = form.querySelector('input[name="name"]');
+                    if (firstInput) {
+                        firstInput.focus();
+                    }
+                }, 500);
+            }
+        }
+
+        // ============================================
+        // INITIALIZE
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            renderChapterNav();
+            renderBookContent(false);
+            updateProgress();
+            updateNavButtons();
+
+            // Attach scroll handlers to all CTA buttons (except submit button)
+            const ctaButtons = document.querySelectorAll('button:not([type="submit"])');
+            ctaButtons.forEach(button => {
+                // Check if button text contains registration keywords
+                const buttonText = button.textContent.toLowerCase();
+                if (
+                    buttonText.includes('enskri') || 
+                    buttonText.includes('rezève') ||
+                    buttonText.includes('kòmanse')
+                ) {
+                    button.addEventListener('click', scrollToForm);
+                }
+            });
+
+            console.log('✅ Lead capture system initialized');
+        });
+    </script>
+</body>
+</html>
