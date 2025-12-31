@@ -1,26 +1,60 @@
 import { createPool } from '@vercel/postgres';
 import { NextRequest, NextResponse } from 'next/server';
 
-// Get database connection string
-const getConnectionString = () => {
-  const dbUrl = process.env.DATABASE_URL || process.env.POSTGRES_URL;
+// Get database connection string with validation and SSL enforcement
+const getConnectionString = (): string => {
+  // Check DATABASE_URL first (priority)
+  let dbUrl = process.env.DATABASE_URL;
   
+  // Fallback to POSTGRES_URL if DATABASE_URL is not set
   if (!dbUrl) {
+    dbUrl = process.env.POSTGRES_URL;
+  }
+  
+  // Throw clear error if neither is set
+  if (!dbUrl) {
+    const error = new Error('DATABASE_URL is not defined. Please set DATABASE_URL or POSTGRES_URL environment variable in Vercel.');
     console.error('[DB ERROR] No database URL found!');
     console.error('[DB ERROR] DATABASE_URL:', process.env.DATABASE_URL ? 'SET' : 'NOT SET');
     console.error('[DB ERROR] POSTGRES_URL:', process.env.POSTGRES_URL ? 'SET' : 'NOT SET');
-    throw new Error('Database connection string is not configured. Please set DATABASE_URL or POSTGRES_URL environment variable.');
+    throw error;
+  }
+  
+  // Ensure SSL is required for Neon (add if not present)
+  const url = new URL(dbUrl);
+  if (!url.searchParams.has('sslmode')) {
+    url.searchParams.set('sslmode', 'require');
+    dbUrl = url.toString();
+    console.log('[DB] Added sslmode=require to connection string');
   }
   
   return dbUrl;
 };
 
-// Create a connection pool using DATABASE_URL or POSTGRES_URL
-const connectionString = getConnectionString();
-const pool = createPool({
-  connectionString: connectionString,
-});
-const sql = pool.sql;
+// Initialize database connection pool
+let pool: ReturnType<typeof createPool>;
+let sql: ReturnType<typeof createPool>['sql'];
+
+try {
+  const connectionString = getConnectionString();
+  
+  // Validate connection string is not undefined before creating pool
+  if (!connectionString || typeof connectionString !== 'string') {
+    throw new Error('Connection string is invalid. Expected a string but got: ' + typeof connectionString);
+  }
+  
+  pool = createPool({
+    connectionString: connectionString,
+  });
+  
+  sql = pool.sql;
+  
+  console.log('[DB] Connection pool created successfully');
+  console.log('[DB] Using:', process.env.DATABASE_URL ? 'DATABASE_URL' : 'POSTGRES_URL');
+} catch (error) {
+  console.error('[DB ERROR] Failed to initialize database connection:', error);
+  throw error;
+}
 
 export async function GET(request: NextRequest) {
   try {

@@ -1,10 +1,42 @@
 import { createPool } from '@vercel/postgres';
 import { NextResponse } from 'next/server';
 
+// Get database connection string with validation and SSL enforcement
+const getConnectionString = (): string => {
+  // Check DATABASE_URL first (priority)
+  let dbUrl = process.env.DATABASE_URL;
+  
+  // Fallback to POSTGRES_URL if DATABASE_URL is not set
+  if (!dbUrl) {
+    dbUrl = process.env.POSTGRES_URL;
+  }
+  
+  // Throw clear error if neither is set
+  if (!dbUrl) {
+    throw new Error('DATABASE_URL is not defined. Please set DATABASE_URL or POSTGRES_URL environment variable in Vercel.');
+  }
+  
+  // Ensure SSL is required for Neon (add if not present)
+  const url = new URL(dbUrl);
+  if (!url.searchParams.has('sslmode')) {
+    url.searchParams.set('sslmode', 'require');
+    dbUrl = url.toString();
+  }
+  
+  return dbUrl;
+};
+
 export async function GET() {
   try {
+    const connectionString = getConnectionString();
+    
+    // Validate connection string is not undefined
+    if (!connectionString || typeof connectionString !== 'string') {
+      throw new Error('Connection string is invalid. Expected a string but got: ' + typeof connectionString);
+    }
+    
     const pool = createPool({
-      connectionString: process.env.DATABASE_URL || process.env.POSTGRES_URL,
+      connectionString: connectionString,
     });
 
     await pool.sql`

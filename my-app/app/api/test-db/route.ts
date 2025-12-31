@@ -44,21 +44,72 @@ export async function GET(request: NextRequest) {
     connectionSource = 'POSTGRES_URL';
   }
 
+  // Validate connection string exists
+  if (!connectionString || typeof connectionString !== 'string') {
+    return NextResponse.json({
+      success: false,
+      error: 'Connection string is invalid. Expected a string but got: ' + typeof connectionString,
+      results
+    }, { status: 500 });
+  }
+
+  // Ensure SSL is required for Neon (add if not present)
+  let finalConnectionString = connectionString;
+  try {
+    const url = new URL(connectionString);
+    if (!url.searchParams.has('sslmode')) {
+      url.searchParams.set('sslmode', 'require');
+      finalConnectionString = url.toString();
+      results.tests.push({
+        name: 'SSL Mode Check',
+        passed: true,
+        details: {
+          message: 'Added sslmode=require to connection string',
+          original_has_ssl: false
+        }
+      });
+    } else {
+      results.tests.push({
+        name: 'SSL Mode Check',
+        passed: true,
+        details: {
+          message: 'Connection string already has sslmode',
+          sslmode: url.searchParams.get('sslmode')
+        }
+      });
+    }
+  } catch (urlError) {
+    results.tests.push({
+      name: 'SSL Mode Check',
+      passed: false,
+      details: {
+        error: 'Failed to parse connection string URL',
+        errorMessage: urlError instanceof Error ? urlError.message : String(urlError)
+      }
+    });
+  }
+
   results.tests.push({
     name: 'Connection String Source',
     passed: true,
     details: {
       using: connectionSource,
-      connectionString_preview: connectionString ? 
-        `${connectionString.substring(0, 20)}...` : 'NOT SET'
+      connectionString_preview: finalConnectionString ? 
+        `${finalConnectionString.substring(0, 20)}...` : 'NOT SET',
+      connectionString_length: finalConnectionString?.length || 0
     }
   });
 
   // Test 3: Try to create pool
   let pool;
   try {
+    // Validate connection string is not undefined before creating pool
+    if (!finalConnectionString || typeof finalConnectionString !== 'string') {
+      throw new Error('Connection string is invalid. Expected a string but got: ' + typeof finalConnectionString);
+    }
+    
     pool = createPool({
-      connectionString: connectionString,
+      connectionString: finalConnectionString,
     });
     results.tests.push({
       name: 'Create Connection Pool',
