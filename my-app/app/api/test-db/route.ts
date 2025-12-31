@@ -35,6 +35,41 @@ export async function GET(request: NextRequest) {
     }, { status: 500 });
   }
 
+  // Clean and extract connection string from various formats
+  const cleanConnectionString = (input: string): string => {
+    if (!input || typeof input !== 'string') {
+      return '';
+    }
+    
+    let cleaned = input.trim();
+    
+    // Remove psql command prefix if present (e.g., "psql '...'")
+    if (cleaned.startsWith('psql')) {
+      // Extract the URL from psql command format: psql 'postgresql://...'
+      const match = cleaned.match(/['"](postgresql?:\/\/[^'"]+)['"]/);
+      if (match && match[1]) {
+        cleaned = match[1];
+      } else {
+        // Try to extract after "psql "
+        const parts = cleaned.split(/\s+/);
+        for (const part of parts) {
+          if (part.startsWith('postgresql://') || part.startsWith('postgres://')) {
+            cleaned = part.replace(/^['"]|['"]$/g, ''); // Remove quotes
+            break;
+          }
+        }
+      }
+    }
+    
+    // Remove surrounding quotes if present
+    cleaned = cleaned.replace(/^['"]|['"]$/g, '');
+    
+    // Remove any trailing command parts (like && or |)
+    cleaned = cleaned.split(/\s*[&|]\s*/)[0].trim();
+    
+    return cleaned;
+  };
+
   // Test 2: Try to connect using DATABASE_URL specifically
   let connectionString = process.env.DATABASE_URL;
   let connectionSource = 'DATABASE_URL';
@@ -51,6 +86,33 @@ export async function GET(request: NextRequest) {
       error: 'Connection string is invalid. Expected a string but got: ' + typeof connectionString,
       results
     }, { status: 500 });
+  }
+
+  // Clean the connection string (remove psql command, quotes, etc.)
+  const originalConnectionString = connectionString;
+  connectionString = cleanConnectionString(connectionString);
+  
+  if (!connectionString) {
+    return NextResponse.json({
+      success: false,
+      error: `Invalid connection string format. Received: "${originalConnectionString.substring(0, 100)}..." Please use only the PostgreSQL URL (e.g., postgresql://user:pass@host/db?sslmode=require)`,
+      results
+    }, { status: 500 });
+  }
+
+  // Log if cleaning was needed
+  if (originalConnectionString !== connectionString) {
+    results.tests.push({
+      name: 'Connection String Cleaning',
+      passed: true,
+      details: {
+        message: 'Removed psql command and quotes from connection string',
+        original_length: originalConnectionString.length,
+        cleaned_length: connectionString.length,
+        original_preview: originalConnectionString.substring(0, 50) + '...',
+        cleaned_preview: connectionString.substring(0, 50) + '...'
+      }
+    });
   }
 
   // Ensure SSL is required for Neon (add if not present)
@@ -84,7 +146,8 @@ export async function GET(request: NextRequest) {
       passed: false,
       details: {
         error: 'Failed to parse connection string URL',
-        errorMessage: urlError instanceof Error ? urlError.message : String(urlError)
+        errorMessage: urlError instanceof Error ? urlError.message : String(urlError),
+        connectionString_preview: connectionString.substring(0, 100)
       }
     });
   }
