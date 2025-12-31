@@ -8,10 +8,9 @@ interface Lead {
   name: string;
   whatsapp: string;
   email: string;
-  city_from_form: string;
-  ip_address: string;
-  device_type: string;
-  referrer: string;
+  city: string;
+  ip: string;
+  device: string;
   created_at: string;
 }
 
@@ -36,10 +35,12 @@ export default function AdminDashboard() {
     setLoading(true);
     
     try {
-      const authHeader = `Bearer ${password}`;
+      // Trim the password input before sending
+      const trimmedPassword = password.trim();
+      const authHeader = `Bearer ${trimmedPassword}`;
       console.log('[FRONTEND] Attempting login...');
-      console.log('[FRONTEND] Password length:', password.length);
-      console.log('[FRONTEND] Auth header:', authHeader);
+      console.log('[FRONTEND] Password length (before trim):', password.length);
+      console.log('[FRONTEND] Password length (after trim):', trimmedPassword.length);
       console.log('[FRONTEND] Auth header length:', authHeader.length);
       
       const response = await fetch('/api/leads', {
@@ -53,8 +54,8 @@ export default function AdminDashboard() {
       
       if (response.ok) {
         setIsAuthenticated(true);
-        localStorage.setItem('admin_token', password);
-        fetchData(password);
+        localStorage.setItem('admin_token', trimmedPassword);
+        fetchData(trimmedPassword);
       } else {
         const errorData = await response.json().catch(() => ({}));
         console.error('[FRONTEND] Login failed:', errorData);
@@ -274,17 +275,17 @@ export default function AdminDashboard() {
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-white">{lead.name}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{lead.whatsapp}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{lead.email}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{lead.city_from_form}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{lead.city}</td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                            lead.device_type === 'mobile' ? 'bg-blue-500/20 text-blue-400' :
-                            lead.device_type === 'desktop' ? 'bg-green-500/20 text-green-400' :
+                            lead.device === 'mobile' ? 'bg-blue-500/20 text-blue-400' :
+                            lead.device === 'desktop' ? 'bg-green-500/20 text-green-400' :
                             'bg-gray-500/20 text-gray-400'
                           }`}>
-                            {lead.device_type}
+                            {lead.device}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400 font-mono">{lead.ip_address}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400 font-mono">{lead.ip}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
                           {new Date(lead.created_at).toLocaleString()}
                         </td>

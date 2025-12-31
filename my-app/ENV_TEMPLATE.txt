@@ -5,18 +5,36 @@
 # Then fill in your actual values
 # ============================================
 
-POSTGRES_URL="postgres://username:password@hostname/database?sslmode=require"
-POSTGRES_URL_NON_POOLING="postgres://username:password@hostname/database?sslmode=require"
-ADMIN_PASSWORD="changeme123"
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL="https://your-project.supabase.co"
+SUPABASE_SERVICE_ROLE_KEY="your-service-role-key-here"
+
+# Admin Dashboard Password
+ADMIN_PASSWORD="Zoe509"
 
 # ============================================
 # INSTRUCTIONS
 # ============================================
 # 
 # 1. Copy this content to a new file named .env.local
-# 2. Get your database URLs from https://console.neon.tech
-# 3. Change ADMIN_PASSWORD to something secure
+# 2. Get your Supabase URL and Service Role Key from https://app.supabase.com
+#    - Go to Project Settings → API
+#    - Copy "Project URL" → NEXT_PUBLIC_SUPABASE_URL
+#    - Copy "service_role" key → SUPABASE_SERVICE_ROLE_KEY
+# 3. Change ADMIN_PASSWORD if needed (default: Zoe509)
 # 4. Never commit .env.local to git (it's already in .gitignore)
 # 5. For Vercel, add these in Settings → Environment Variables
 #
-
+# ============================================
+# SUPABASE TABLE SCHEMA
+# ============================================
+# Create a table named "leads" in Supabase with these columns:
+#
+# - name (text, not null)
+# - whatsapp (text, not null)
+# - email (text, not null)
+# - city (text, not null)
+# - device (text, nullable)
+# - ip (text, nullable)
+# - created_at (timestamp, default: now())
+#

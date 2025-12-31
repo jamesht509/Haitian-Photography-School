@@ -1,124 +1,16 @@
-import { createPool } from '@vercel/postgres';
 import { NextRequest, NextResponse } from 'next/server';
-
-// Clean and extract connection string from various formats
-const cleanConnectionString = (input: string): string => {
-  if (!input || typeof input !== 'string') {
-    return '';
-  }
-  
-  let cleaned = input.trim();
-  
-  // Remove psql command prefix if present (e.g., "psql '...'")
-  if (cleaned.startsWith('psql')) {
-    // Extract the URL from psql command format: psql 'postgresql://...'
-    const match = cleaned.match(/['"](postgresql?:\/\/[^'"]+)['"]/);
-    if (match && match[1]) {
-      cleaned = match[1];
-    } else {
-      // Try to extract after "psql "
-      const parts = cleaned.split(/\s+/);
-      for (const part of parts) {
-        if (part.startsWith('postgresql://') || part.startsWith('postgres://')) {
-          cleaned = part.replace(/^['"]|['"]$/g, ''); // Remove quotes
-          break;
-        }
-      }
-    }
-  }
-  
-  // Remove surrounding quotes if present
-  cleaned = cleaned.replace(/^['"]|['"]$/g, '');
-  
-  // Remove any trailing command parts (like && or |)
-  cleaned = cleaned.split(/\s*[&|]\s*/)[0].trim();
-  
-  return cleaned;
-};
-
-// Get database connection string with validation and SSL enforcement
-const getConnectionString = (): string => {
-  // Check DATABASE_URL first (priority)
-  let dbUrl = process.env.DATABASE_URL;
-  
-  // Fallback to POSTGRES_URL if DATABASE_URL is not set
-  if (!dbUrl) {
-    dbUrl = process.env.POSTGRES_URL;
-  }
-  
-  // Throw clear error if neither is set
-  if (!dbUrl) {
-    const error = new Error('DATABASE_URL is not defined. Please set DATABASE_URL or POSTGRES_URL environment variable in Vercel.');
-    console.error('[DB ERROR] No database URL found!');
-    console.error('[DB ERROR] DATABASE_URL:', process.env.DATABASE_URL ? 'SET' : 'NOT SET');
-    console.error('[DB ERROR] POSTGRES_URL:', process.env.POSTGRES_URL ? 'SET' : 'NOT SET');
-    throw error;
-  }
-  
-  // Clean the connection string (remove psql command, quotes, etc.)
-  const originalUrl = dbUrl;
-  dbUrl = cleanConnectionString(dbUrl);
-  
-  if (!dbUrl) {
-    throw new Error(`Invalid connection string format. Received: "${originalUrl.substring(0, 100)}..." Please use only the PostgreSQL URL (e.g., postgresql://user:pass@host/db?sslmode=require)`);
-  }
-  
-  // Log if cleaning was needed
-  if (originalUrl !== dbUrl) {
-    console.log('[DB] Cleaned connection string (removed psql command/quotes)');
-    console.log('[DB] Original length:', originalUrl.length);
-    console.log('[DB] Cleaned length:', dbUrl.length);
-  }
-  
-  // Ensure SSL is required for Neon (add if not present)
-  try {
-    const url = new URL(dbUrl);
-    if (!url.searchParams.has('sslmode')) {
-      url.searchParams.set('sslmode', 'require');
-      dbUrl = url.toString();
-      console.log('[DB] Added sslmode=require to connection string');
-    }
-  } catch (urlError) {
-    console.error('[DB ERROR] Failed to parse connection string as URL:', urlError);
-    throw new Error(`Invalid connection string format. Please check your DATABASE_URL or POSTGRES_URL. Error: ${urlError instanceof Error ? urlError.message : String(urlError)}`);
-  }
-  
-  return dbUrl;
-};
-
-// Initialize database connection pool
-let pool: ReturnType<typeof createPool>;
-let sql: ReturnType<typeof createPool>['sql'];
-
-try {
-  const connectionString = getConnectionString();
-  
-  // Validate connection string is not undefined before creating pool
-  if (!connectionString || typeof connectionString !== 'string') {
-    throw new Error('Connection string is invalid. Expected a string but got: ' + typeof connectionString);
-  }
-  
-  pool = createPool({
-    connectionString: connectionString,
-  });
-  
-  sql = pool.sql;
-  
-  console.log('[DB] Connection pool created successfully');
-  console.log('[DB] Using:', process.env.DATABASE_URL ? 'DATABASE_URL' : 'POSTGRES_URL');
-} catch (error) {
-  console.error('[DB ERROR] Failed to initialize database connection:', error);
-  throw error;
-}
+import { getSupabaseClient } from '@/lib/supabase';
 
 export async function GET(request: NextRequest) {
   try {
     // Check admin password
     const authHeader = request.headers.get('authorization');
-    // Trim whitespace from password to avoid issues
-    const adminPassword = (process.env.ADMIN_PASSWORD || 'admin123').trim();
     
-    // Normalize comparison - trim both sides
+    // Get password from env and trim it
+    const rawPassword = process.env.ADMIN_PASSWORD || '';
+    const adminPassword = rawPassword.trim();
+    
+    // Normalize comparison - trim both sides (input and env var)
     const expectedHeader = `Bearer ${adminPassword}`;
     const receivedHeader = authHeader?.trim() || '';
     
@@ -129,64 +21,93 @@ export async function GET(request: NextRequest) {
       );
     }
     
+    // Get Supabase client
+    const supabase = getSupabaseClient();
+    
     // Get total leads count
-    const totalResult = await sql`
-      SELECT COUNT(*) as total FROM leads
-    `;
-    const totalLeads = parseInt(totalResult.rows[0].total);
+    const { count: totalLeads, error: countError } = await supabase
+      .from('leads')
+      .select('*', { count: 'exact', head: true });
+    
+    if (countError) {
+      throw countError;
+    }
     
     // Get device type breakdown
-    const deviceResult = await sql`
-      SELECT 
-        device_type,
-        COUNT(*) as count,
-        ROUND(COUNT(*) * 100.0 / ${totalLeads}, 1) as percentage
-      FROM leads
-      GROUP BY device_type
-      ORDER BY count DESC
-    `;
+    const { data: deviceData, error: deviceError } = await supabase
+      .from('leads')
+      .select('device');
+    
+    if (deviceError) {
+      throw deviceError;
+    }
+    
+    // Calculate device breakdown
+    const deviceCounts: Record<string, number> = {};
+    deviceData?.forEach((lead: { device?: string }) => {
+      const deviceType = lead.device || 'unknown';
+      deviceCounts[deviceType] = (deviceCounts[deviceType] || 0) + 1;
+    });
+    
+    const deviceBreakdown = Object.entries(deviceCounts).map(([device_type, count]) => ({
+      device_type,
+      count,
+      percentage: totalLeads ? Math.round((count / totalLeads) * 1000) / 10 : 0
+    })).sort((a, b) => b.count - a.count);
     
     // Get top cities
-    const citiesResult = await sql`
-      SELECT 
-        city_from_form,
-        COUNT(*) as count
-      FROM leads
-      GROUP BY city_from_form
-      ORDER BY count DESC
-      LIMIT 10
-    `;
+    const { data: cityData, error: cityError } = await supabase
+      .from('leads')
+      .select('city');
+    
+    if (cityError) {
+      throw cityError;
+    }
+    
+    // Calculate city breakdown
+    const cityCounts: Record<string, number> = {};
+    cityData?.forEach((lead: { city?: string }) => {
+      const cityName = lead.city || 'unknown';
+      cityCounts[cityName] = (cityCounts[cityName] || 0) + 1;
+    });
+    
+    const topCities = Object.entries(cityCounts)
+      .map(([city_from_form, count]) => ({ city_from_form, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 10);
     
     // Get leads over time (last 30 days)
-    const timelineResult = await sql`
-      SELECT 
-        DATE(created_at) as date,
-        COUNT(*) as count
-      FROM leads
-      WHERE created_at >= CURRENT_DATE - INTERVAL '30 days'
-      GROUP BY DATE(created_at)
-      ORDER BY date DESC
-    `;
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
     
-    // Get referrer breakdown
-    const referrerResult = await sql`
-      SELECT 
-        referrer,
-        COUNT(*) as count
-      FROM leads
-      GROUP BY referrer
-      ORDER BY count DESC
-      LIMIT 10
-    `;
+    const { data: timelineData, error: timelineError } = await supabase
+      .from('leads')
+      .select('created_at')
+      .gte('created_at', thirtyDaysAgo.toISOString());
+    
+    if (timelineError) {
+      throw timelineError;
+    }
+    
+    // Group by date
+    const timelineCounts: Record<string, number> = {};
+    timelineData?.forEach((lead: { created_at: string }) => {
+      const date = new Date(lead.created_at).toISOString().split('T')[0];
+      timelineCounts[date] = (timelineCounts[date] || 0) + 1;
+    });
+    
+    const timeline = Object.entries(timelineCounts)
+      .map(([date, count]) => ({ date, count }))
+      .sort((a, b) => b.date.localeCompare(a.date));
     
     return NextResponse.json({
       success: true,
       stats: {
-        total_leads: totalLeads,
-        device_breakdown: deviceResult.rows,
-        top_cities: citiesResult.rows,
-        timeline: timelineResult.rows,
-        referrers: referrerResult.rows,
+        total_leads: totalLeads || 0,
+        device_breakdown: deviceBreakdown,
+        top_cities: topCities,
+        timeline: timeline,
+        referrers: [], // Not tracking referrers in new schema
       }
     });
     
@@ -202,4 +123,3 @@ export async function GET(request: NextRequest) {
     );
   }
 }
-

@@ -49,7 +49,7 @@
             background-size: cover;
             background-position: center top;
             background-attachment: fixed;
-            z-index: -100;
+            z-index: -10;
             pointer-events: none;
         }
 
@@ -62,27 +62,29 @@
 
         /* Dark Overlay - Send to back */
         .dark-overlay {
-            z-index: -100;
+            z-index: -10;
             pointer-events: none;
         }
 
         /* Hero Content - Bring to front */
         .hero-content {
             position: relative;
-            z-index: 100;
+            z-index: 50;
             pointer-events: auto;
         }
 
         /* Form Container - Ensure interactivity */
         .form-container {
             position: relative;
-            z-index: 100;
+            z-index: 50;
             pointer-events: auto;
         }
 
-        /* Form inputs and buttons - Ensure pointer events */
+        /* Form inputs and buttons - Ensure pointer events and z-index */
         form input, form button, form textarea, form select {
             pointer-events: auto !important;
+            z-index: 50 !important;
+            position: relative;
         }
 
         /* Specific form elements - Force pointer events */
@@ -130,9 +132,9 @@
             pointer-events: auto;
         }
 
-        /* Body should not block interactions */
+        /* Body should allow interactions - REMOVED pointer-events: none to fix form blocking */
         body {
-            pointer-events: none;
+            pointer-events: auto;
         }
 
         /* Main content must explicitly allow interactions */
@@ -140,6 +142,22 @@
         .hero-content, .form-container, .cta-button, form,
         input, button, textarea, select, a {
             pointer-events: auto !important;
+        }
+        
+        /* Ensure form inputs are always interactive */
+        input[type="text"], input[type="email"], input[type="tel"], 
+        input[type="password"], textarea, select {
+            pointer-events: auto !important;
+            z-index: 50 !important;
+            position: relative;
+        }
+        
+        /* Ensure buttons are always clickable */
+        button, .cta-button {
+            pointer-events: auto !important;
+            z-index: 50 !important;
+            position: relative;
+            cursor: pointer !important;
         }
 
         .gradient-gold {
@@ -947,14 +965,14 @@
                     </div>
                 </div>
 
-                <!-- Card 5: Aprann fè Portraits -->
+                <!-- Card 5: Règ Pòtrè yo -->
                 <div class="mastery-card bento-card-image glassmorphism rounded-2xl overflow-hidden h-80">
-                    <img src="/images/MIKA44.jpg" alt="Aprann fè Portraits" class="w-full h-full object-cover object-center" style="object-position: 50% 30%;">
+                    <img src="/images/MIKA44.jpg" alt="Règ Pòtrè yo" class="w-full h-full object-cover object-center" style="object-position: 50% 30%;">
                     <div class="bento-card-overlay"></div>
                     <div class="absolute bottom-0 left-0 right-0 p-6">
-                        <h3 class="text-2xl font-serif font-extrabold text-gold mb-2">Aprann fè Portraits</h3>
+                        <h3 class="text-2xl font-serif font-extrabold text-gold mb-2">Règ Pòtrè yo</h3>
                         <p class="text-gray-300 text-sm leading-relaxed">
-                            Teknik koupe foto (Crop) ak jan pou w swiv Règ de Twa (Rule of Thirds).
+                            Aprann règ 'Rule of Thirds' la ak ki kote ou pa dwe janm koupe nan kò yon moun lè w ap fè pòtrè pou rezilta pwofesyonèl.
                         </p>
                     </div>
                 </div>
@@ -1407,19 +1425,26 @@
             submitButton.style.opacity = '0.7';
             
             try {
-                // For static demo - simulate API success
-                // In production, this would connect to Next.js API
-                console.log('📝 Form submitted (demo mode):', data);
-
-                // Simulate API delay
-                await new Promise(resolve => setTimeout(resolve, 1000));
-
-                // Always show success for demo purposes
-                form.reset();
-                showSuccessModal();
-
-                console.log('✅ Lead captured (demo):', data);
-
+                // Send to API
+                const response = await fetch('/api/leads', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    // Success! Reset form and show success modal with 90% progress
+                    form.reset();
+                    showSuccessModal();
+                    
+                    console.log('✅ Lead captured:', result.data);
+                } else {
+                    throw new Error(result.error || 'Failed to submit');
+                }
             } catch (error) {
                 console.error('Form submission error:', error);
                 alert('Te gen yon erè. Tanpri eseye ankò oswa kontakte nou sou WhatsApp.');

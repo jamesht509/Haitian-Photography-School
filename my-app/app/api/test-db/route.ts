@@ -1,9 +1,8 @@
-import { createPool } from '@vercel/postgres';
 import { NextRequest, NextResponse } from 'next/server';
+import { getSupabaseClient } from '@/lib/supabase';
 
 /**
- * Temporary test endpoint to verify database connection
- * Tests specifically DATABASE_URL and runs SELECT NOW()
+ * Test endpoint to verify Supabase connection
  */
 export async function GET(request: NextRequest) {
   const results: any = {
@@ -12,235 +11,75 @@ export async function GET(request: NextRequest) {
     summary: {}
   };
 
-  // Test 1: Check if DATABASE_URL exists
-  const hasDatabaseUrl = !!process.env.DATABASE_URL;
-  const hasPostgresUrl = !!process.env.POSTGRES_URL;
+  // Test 1: Check if Supabase environment variables exist
+  const hasSupabaseUrl = !!process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const hasServiceRoleKey = !!process.env.SUPABASE_SERVICE_ROLE_KEY;
   
   results.tests.push({
     name: 'Environment Variables Check',
-    passed: hasDatabaseUrl || hasPostgresUrl,
+    passed: hasSupabaseUrl && hasServiceRoleKey,
     details: {
-      DATABASE_URL: hasDatabaseUrl ? 'SET' : 'NOT SET',
-      POSTGRES_URL: hasPostgresUrl ? 'SET' : 'NOT SET',
-      DATABASE_URL_length: process.env.DATABASE_URL?.length || 0,
-      POSTGRES_URL_length: process.env.POSTGRES_URL?.length || 0,
+      NEXT_PUBLIC_SUPABASE_URL: hasSupabaseUrl ? 'SET' : 'NOT SET',
+      SUPABASE_SERVICE_ROLE_KEY: hasServiceRoleKey ? 'SET' : 'NOT SET',
+      SUPABASE_URL_length: process.env.NEXT_PUBLIC_SUPABASE_URL?.length || 0,
+      SERVICE_ROLE_KEY_length: process.env.SUPABASE_SERVICE_ROLE_KEY?.length || 0,
     }
   });
 
-  if (!hasDatabaseUrl && !hasPostgresUrl) {
+  if (!hasSupabaseUrl || !hasServiceRoleKey) {
     return NextResponse.json({
       success: false,
-      error: 'No database URL found. Neither DATABASE_URL nor POSTGRES_URL is set.',
+      error: 'Supabase environment variables not configured. Please set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in Vercel.',
       results
     }, { status: 500 });
   }
 
-  // Clean and extract connection string from various formats
-  const cleanConnectionString = (input: string): string => {
-    if (!input || typeof input !== 'string') {
-      return '';
-    }
-    
-    let cleaned = input.trim();
-    
-    // Remove psql command prefix if present (e.g., "psql '...'")
-    if (cleaned.startsWith('psql')) {
-      // Extract the URL from psql command format: psql 'postgresql://...'
-      const match = cleaned.match(/['"](postgresql?:\/\/[^'"]+)['"]/);
-      if (match && match[1]) {
-        cleaned = match[1];
-      } else {
-        // Try to extract after "psql "
-        const parts = cleaned.split(/\s+/);
-        for (const part of parts) {
-          if (part.startsWith('postgresql://') || part.startsWith('postgres://')) {
-            cleaned = part.replace(/^['"]|['"]$/g, ''); // Remove quotes
-            break;
-          }
-        }
-      }
-    }
-    
-    // Remove surrounding quotes if present
-    cleaned = cleaned.replace(/^['"]|['"]$/g, '');
-    
-    // Remove any trailing command parts (like && or |)
-    cleaned = cleaned.split(/\s*[&|]\s*/)[0].trim();
-    
-    return cleaned;
-  };
-
-  // Test 2: Try to connect using DATABASE_URL specifically
-  let connectionString = process.env.DATABASE_URL;
-  let connectionSource = 'DATABASE_URL';
-  
-  if (!connectionString) {
-    connectionString = process.env.POSTGRES_URL;
-    connectionSource = 'POSTGRES_URL';
-  }
-
-  // Validate connection string exists
-  if (!connectionString || typeof connectionString !== 'string') {
-    return NextResponse.json({
-      success: false,
-      error: 'Connection string is invalid. Expected a string but got: ' + typeof connectionString,
-      results
-    }, { status: 500 });
-  }
-
-  // Clean the connection string (remove psql command, quotes, etc.)
-  const originalConnectionString = connectionString;
-  connectionString = cleanConnectionString(connectionString);
-  
-  if (!connectionString) {
-    return NextResponse.json({
-      success: false,
-      error: `Invalid connection string format. Received: "${originalConnectionString.substring(0, 100)}..." Please use only the PostgreSQL URL (e.g., postgresql://user:pass@host/db?sslmode=require)`,
-      results
-    }, { status: 500 });
-  }
-
-  // Log if cleaning was needed
-  if (originalConnectionString !== connectionString) {
+  // Test 2: Try to create Supabase client
+  let supabase;
+  try {
+    supabase = getSupabaseClient();
     results.tests.push({
-      name: 'Connection String Cleaning',
+      name: 'Create Supabase Client',
       passed: true,
       details: {
-        message: 'Removed psql command and quotes from connection string',
-        original_length: originalConnectionString.length,
-        cleaned_length: connectionString.length,
-        original_preview: originalConnectionString.substring(0, 50) + '...',
-        cleaned_preview: connectionString.substring(0, 50) + '...'
-      }
-    });
-  }
-
-  // Ensure SSL is required for Neon (add if not present)
-  let finalConnectionString = connectionString;
-  try {
-    const url = new URL(connectionString);
-    if (!url.searchParams.has('sslmode')) {
-      url.searchParams.set('sslmode', 'require');
-      finalConnectionString = url.toString();
-      results.tests.push({
-        name: 'SSL Mode Check',
-        passed: true,
-        details: {
-          message: 'Added sslmode=require to connection string',
-          original_has_ssl: false
-        }
-      });
-    } else {
-      results.tests.push({
-        name: 'SSL Mode Check',
-        passed: true,
-        details: {
-          message: 'Connection string already has sslmode',
-          sslmode: url.searchParams.get('sslmode')
-        }
-      });
-    }
-  } catch (urlError) {
-    results.tests.push({
-      name: 'SSL Mode Check',
-      passed: false,
-      details: {
-        error: 'Failed to parse connection string URL',
-        errorMessage: urlError instanceof Error ? urlError.message : String(urlError),
-        connectionString_preview: connectionString.substring(0, 100)
-      }
-    });
-  }
-
-  results.tests.push({
-    name: 'Connection String Source',
-    passed: true,
-    details: {
-      using: connectionSource,
-      connectionString_preview: finalConnectionString ? 
-        `${finalConnectionString.substring(0, 20)}...` : 'NOT SET',
-      connectionString_length: finalConnectionString?.length || 0
-    }
-  });
-
-  // Test 3: Try to create pool
-  let pool;
-  try {
-    // Validate connection string is not undefined before creating pool
-    if (!finalConnectionString || typeof finalConnectionString !== 'string') {
-      throw new Error('Connection string is invalid. Expected a string but got: ' + typeof finalConnectionString);
-    }
-    
-    pool = createPool({
-      connectionString: finalConnectionString,
-    });
-    results.tests.push({
-      name: 'Create Connection Pool',
-      passed: true,
-      details: {
-        message: 'Pool created successfully'
+        message: 'Supabase client created successfully'
       }
     });
   } catch (error) {
     return NextResponse.json({
       success: false,
-      error: 'Failed to create connection pool',
+      error: 'Failed to create Supabase client',
       errorMessage: error instanceof Error ? error.message : String(error),
-      errorStack: error instanceof Error ? error.stack : undefined,
       results
     }, { status: 500 });
   }
 
-  // Test 4: Try to execute SELECT NOW()
+  // Test 3: Try to query the leads table
   try {
-    const sql = pool.sql;
-    const result = await sql`SELECT NOW() as current_time, version() as pg_version`;
+    const { data, error, count } = await supabase
+      .from('leads')
+      .select('*', { count: 'exact', head: true });
     
-    results.tests.push({
-      name: 'Execute SELECT NOW()',
-      passed: true,
-      details: {
-        current_time: result.rows[0]?.current_time,
-        pg_version: result.rows[0]?.pg_version?.substring(0, 50) + '...',
-        rows_returned: result.rowCount
-      }
-    });
-
-    // Test 5: Try to query a table (if leads table exists)
-    try {
-      const tableCheck = await sql`
-        SELECT COUNT(*) as count 
-        FROM information_schema.tables 
-        WHERE table_name = 'leads'
-      `;
-      
-      const leadsTableExists = parseInt(tableCheck.rows[0]?.count || '0') > 0;
-      
+    if (error) {
       results.tests.push({
-        name: 'Check leads table exists',
-        passed: leadsTableExists,
-        details: {
-          table_exists: leadsTableExists,
-          message: leadsTableExists ? 'leads table found' : 'leads table not found'
-        }
-      });
-
-      if (leadsTableExists) {
-        const leadsCount = await sql`SELECT COUNT(*) as count FROM leads`;
-        results.tests.push({
-          name: 'Count leads in table',
-          passed: true,
-          details: {
-            total_leads: parseInt(leadsCount.rows[0]?.count || '0')
-          }
-        });
-      }
-    } catch (tableError) {
-      results.tests.push({
-        name: 'Check leads table exists',
+        name: 'Query leads table',
         passed: false,
         details: {
-          error: tableError instanceof Error ? tableError.message : String(tableError)
+          error: error.message,
+          code: error.code,
+          hint: error.message.includes('does not exist') 
+            ? 'Create the "leads" table in Supabase with columns: name, whatsapp, email, city, device, ip, created_at'
+            : 'Check your Supabase configuration'
+        }
+      });
+    } else {
+      results.tests.push({
+        name: 'Query leads table',
+        passed: true,
+        details: {
+          message: 'Successfully queried leads table',
+          total_leads: count || 0,
+          table_exists: true
         }
       });
     }
@@ -254,25 +93,24 @@ export async function GET(request: NextRequest) {
       passed_tests: passedTests,
       failed_tests: totalTests - passedTests,
       all_passed: passedTests === totalTests,
-      connection_status: 'Connected',
-      database_url_source: connectionSource
+      connection_status: passedTests === totalTests ? 'Connected' : 'Partial',
+      database_type: 'Supabase'
     };
 
     return NextResponse.json({
-      success: true,
-      message: 'Connected',
-      connection_status: 'Connected',
+      success: passedTests === totalTests,
+      message: passedTests === totalTests ? 'Supabase connection successful' : 'Some tests failed',
+      connection_status: passedTests === totalTests ? 'Connected' : 'Failed',
       results
     });
 
   } catch (error) {
     results.tests.push({
-      name: 'Execute SELECT NOW()',
+      name: 'Query leads table',
       passed: false,
       details: {
         error: error instanceof Error ? error.message : String(error),
-        error_type: error instanceof Error ? error.constructor.name : typeof error,
-        error_stack: error instanceof Error ? error.stack : undefined
+        error_type: error instanceof Error ? error.constructor.name : typeof error
       }
     });
 
@@ -286,13 +124,7 @@ export async function GET(request: NextRequest) {
       success: false,
       message: 'Connection failed',
       error: error instanceof Error ? error.message : String(error),
-      errorDetails: {
-        name: error instanceof Error ? error.name : 'Unknown',
-        message: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined
-      },
       results
     }, { status: 500 });
   }
 }
-
