@@ -87,6 +87,27 @@ export async function POST(request: NextRequest) {
       );
     }
     
+    // Try to link this lead to a visit (if visit_id is provided in request)
+    const visitId = request.headers.get('x-visit-id');
+    if (visitId) {
+      try {
+        const { error: visitError } = await supabase
+          .from('visits')
+          .update({
+            converted: true,
+            converted_at: new Date().toISOString(),
+            lead_id: data.id
+          })
+          .eq('id', parseInt(visitId));
+        
+        if (visitError) {
+          console.warn('Failed to link visit to lead:', visitError);
+        }
+      } catch (linkError) {
+        console.warn('Error linking visit to lead:', linkError);
+      }
+    }
+    
     // Return success response
     return NextResponse.json({
       success: true,

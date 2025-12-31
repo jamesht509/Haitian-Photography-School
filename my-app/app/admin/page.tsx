@@ -20,11 +20,34 @@ interface Stats {
   top_cities: Array<{ city_from_form: string; count: number }>;
 }
 
+interface VisitStats {
+  total_visits: number;
+  total_leads: number;
+  converted_visits: number;
+  bounced_visits: number;
+  conversion_rate: number;
+  bounce_rate: number;
+  device_breakdown: Array<{ device_type: string; count: number; percentage: number }>;
+  top_referrers: Array<{ referrer: string; count: number }>;
+  top_campaigns: Array<{ campaign: string; count: number }>;
+}
+
+interface ScrollStats {
+  total_visits: number;
+  total_visits_with_scroll: number;
+  milestone_counts: Record<number, number>;
+  milestone_percentages: Record<number, number>;
+  section_counts: Record<string, number>;
+  section_percentages: Record<string, number>;
+}
+
 export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [leads, setLeads] = useState<Lead[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
+  const [visitStats, setVisitStats] = useState<VisitStats | null>(null);
+  const [scrollStats, setScrollStats] = useState<ScrollStats | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
@@ -35,13 +58,8 @@ export default function AdminDashboard() {
     setLoading(true);
     
     try {
-      // Trim the password input before sending
       const trimmedPassword = password.trim();
       const authHeader = `Bearer ${trimmedPassword}`;
-      console.log('[FRONTEND] Attempting login...');
-      console.log('[FRONTEND] Password length (before trim):', password.length);
-      console.log('[FRONTEND] Password length (after trim):', trimmedPassword.length);
-      console.log('[FRONTEND] Auth header length:', authHeader.length);
       
       const response = await fetch('/api/leads', {
         headers: {
@@ -49,16 +67,12 @@ export default function AdminDashboard() {
         }
       });
       
-      console.log('[FRONTEND] Response status:', response.status);
-      console.log('[FRONTEND] Response ok:', response.ok);
-      
       if (response.ok) {
         setIsAuthenticated(true);
         localStorage.setItem('admin_token', trimmedPassword);
         fetchData(trimmedPassword);
       } else {
         const errorData = await response.json().catch(() => ({}));
-        console.error('[FRONTEND] Login failed:', errorData);
         setError(`Senha incorreta (Status: ${response.status})`);
       }
     } catch (err) {
@@ -84,7 +98,7 @@ export default function AdminDashboard() {
         setLeads(leadsData.leads);
       }
       
-      // Fetch stats
+      // Fetch lead stats
       const statsResponse = await fetch('/api/leads/stats', {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -94,6 +108,30 @@ export default function AdminDashboard() {
       if (statsResponse.ok) {
         const statsData = await statsResponse.json();
         setStats(statsData.stats);
+      }
+      
+      // Fetch visit stats
+      const visitStatsResponse = await fetch('/api/visits/stats', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (visitStatsResponse.ok) {
+        const visitStatsData = await visitStatsResponse.json();
+        setVisitStats(visitStatsData.stats);
+      }
+      
+      // Fetch scroll stats
+      const scrollStatsResponse = await fetch('/api/scroll/stats', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (scrollStatsResponse.ok) {
+        const scrollStatsData = await scrollStatsResponse.json();
+        setScrollStats(scrollStatsData.stats);
       }
     } catch (err) {
       console.error('Error fetching data:', err);
@@ -117,6 +155,94 @@ export default function AdminDashboard() {
     setPassword('');
     setLeads([]);
     setStats(null);
+    setVisitStats(null);
+    setScrollStats(null);
+  };
+  
+  // Get color based on percentage (Green -> Yellow -> Red)
+  const getColorForPercentage = (percentage: number): string => {
+    if (percentage >= 70) return 'bg-green-500';
+    if (percentage >= 40) return 'bg-yellow-500';
+    return 'bg-red-500';
+  };
+  
+  // Get text color based on percentage
+  const getTextColorForPercentage = (percentage: number): string => {
+    if (percentage >= 70) return 'text-green-400';
+    if (percentage >= 40) return 'text-yellow-400';
+    return 'text-red-400';
+  };
+
+  const exportToCSV = async (type: 'leads' | 'traffic') => {
+    const token = localStorage.getItem('admin_token');
+    if (!token) return;
+
+    try {
+      if (type === 'leads') {
+        // Export leads
+        const headers = ['ID', 'Name', 'WhatsApp', 'Email', 'City', 'Device', 'IP', 'Created At'];
+        const rows = leads.map(lead => [
+          lead.id,
+          lead.name,
+          lead.whatsapp,
+          lead.email,
+          lead.city,
+          lead.device,
+          lead.ip,
+          new Date(lead.created_at).toLocaleString()
+        ]);
+        
+        const csvContent = [
+          headers.join(','),
+          ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+        ].join('\n');
+        
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `leads_export_${new Date().toISOString().split('T')[0]}.csv`;
+        link.click();
+      } else {
+        // Export traffic data - fetch all visits
+        const response = await fetch('/api/visits/export', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          const headers = ['ID', 'IP', 'Device', 'Referrer', 'UTM Source', 'UTM Medium', 'UTM Campaign', 'Converted', 'Lead ID', 'Visit Duration (s)', 'Created At'];
+          const rows = data.visits.map((visit: any) => [
+            visit.id,
+            visit.ip || '',
+            visit.device || '',
+            visit.referrer || '',
+            visit.utm_source || '',
+            visit.utm_medium || '',
+            visit.utm_campaign || '',
+            visit.converted ? 'Yes' : 'No',
+            visit.lead_id || '',
+            visit.visit_duration || '',
+            new Date(visit.created_at).toLocaleString()
+          ]);
+          
+          const csvContent = [
+            headers.join(','),
+            ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+          ].join('\n');
+          
+          const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+          const link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = `traffic_export_${new Date().toISOString().split('T')[0]}.csv`;
+          link.click();
+        }
+      }
+    } catch (err) {
+      console.error('Error exporting CSV:', err);
+      alert('Error exporting data. Please try again.');
+    }
   };
 
   // Login Screen
@@ -178,12 +304,28 @@ export default function AdminDashboard() {
               <h1 className="text-2xl font-bold text-white">Admin Dashboard</h1>
               <p className="text-gray-400 text-sm">Haitian Photography School</p>
             </div>
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-white transition-all"
-            >
-              Logout
-            </button>
+            <div className="flex items-center gap-4">
+              <div className="flex gap-2">
+                <button
+                  onClick={() => exportToCSV('leads')}
+                  className="px-4 py-2 bg-[#D4AF37]/20 hover:bg-[#D4AF37]/30 border border-[#D4AF37]/50 rounded-lg text-[#D4AF37] text-sm font-medium transition-all"
+                >
+                  Export Leads CSV
+                </button>
+                <button
+                  onClick={() => exportToCSV('traffic')}
+                  className="px-4 py-2 bg-[#D4AF37]/20 hover:bg-[#D4AF37]/30 border border-[#D4AF37]/50 rounded-lg text-[#D4AF37] text-sm font-medium transition-all"
+                >
+                  Export Traffic CSV
+                </button>
+              </div>
+              <button
+                onClick={handleLogout}
+                className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-white transition-all"
+              >
+                Logout
+              </button>
+            </div>
           </div>
         </div>
       </header>
@@ -196,23 +338,163 @@ export default function AdminDashboard() {
           </div>
         ) : (
           <>
+            {/* Analytics Section */}
+            {visitStats && (
+              <div className="mb-8">
+                <h2 className="text-2xl font-bold text-white mb-6">Analytics</h2>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                  {/* Total Visitors */}
+                  <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-gray-400 text-sm font-medium">Total Visitors</h3>
+                      <div className="w-10 h-10 rounded-full bg-[#D4AF37]/20 flex items-center justify-center">
+                        <svg className="w-5 h-5 text-[#D4AF37]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                      </div>
+                    </div>
+                    <p className="text-4xl font-bold text-white">{visitStats.total_visits.toLocaleString()}</p>
+                  </div>
+
+                  {/* Conversion Rate */}
+                  <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-gray-400 text-sm font-medium">Conversion Rate</h3>
+                      <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
+                        <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                    </div>
+                    <p className="text-4xl font-bold text-white">{visitStats.conversion_rate.toFixed(2)}%</p>
+                    <p className="text-xs text-gray-400 mt-1">{visitStats.converted_visits} of {visitStats.total_visits} converted</p>
+                  </div>
+
+                  {/* Bounce Rate */}
+                  <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-gray-400 text-sm font-medium">Bounce Rate</h3>
+                      <div className="w-10 h-10 rounded-full bg-orange-500/20 flex items-center justify-center">
+                        <svg className="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </div>
+                    </div>
+                    <p className="text-4xl font-bold text-white">{visitStats.bounce_rate.toFixed(2)}%</p>
+                    <p className="text-xs text-gray-400 mt-1">{visitStats.bounced_visits} left in &lt;10s</p>
+                  </div>
+
+                  {/* Total Leads */}
+                  <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-gray-400 text-sm font-medium">Total Leads</h3>
+                      <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
+                        <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                      </div>
+                    </div>
+                    <p className="text-4xl font-bold text-white">{visitStats.total_leads.toLocaleString()}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Scroll Heatmap Section */}
+            {scrollStats && (
+              <div className="mb-8">
+                <h2 className="text-2xl font-bold text-white mb-6">Mapa de Calor (Scroll Depth)</h2>
+                <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+                  <div className="space-y-6">
+                    {/* Section-based Scroll Depth */}
+                    <div>
+                      <h3 className="text-lg font-semibold text-white mb-4">Porcentagem de Usuários por Seção</h3>
+                      <div className="space-y-4">
+                        {['Intro', '3D Book', 'Price/Offer', 'Footer'].map((section) => {
+                          const percentage = scrollStats.section_percentages[section] || 0;
+                          const count = scrollStats.section_counts[section] || 0;
+                          return (
+                            <div key={section} className="space-y-2">
+                              <div className="flex items-center justify-between">
+                                <span className="text-gray-300 font-medium">{section}</span>
+                                <span className={`font-bold ${getTextColorForPercentage(percentage)}`}>
+                                  {percentage.toFixed(1)}%
+                                </span>
+                              </div>
+                              <div className="w-full h-8 bg-white/10 rounded-full overflow-hidden relative">
+                                <div
+                                  className={`h-full ${getColorForPercentage(percentage)} transition-all duration-500 flex items-center justify-end pr-2`}
+                                  style={{ width: `${Math.min(percentage, 100)}%` }}
+                                >
+                                  {percentage > 10 && (
+                                    <span className="text-xs font-semibold text-white">{count}</span>
+                                  )}
+                                </div>
+                                {percentage <= 10 && (
+                                  <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-400">{count}</span>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Milestone-based Scroll Depth */}
+                    <div className="pt-6 border-t border-white/10">
+                      <h3 className="text-lg font-semibold text-white mb-4">Milestones de Scroll</h3>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        {[25, 50, 75, 100].map((milestone) => {
+                          const percentage = scrollStats.milestone_percentages[milestone] || 0;
+                          const count = scrollStats.milestone_counts[milestone] || 0;
+                          return (
+                            <div key={milestone} className="space-y-2">
+                              <div className="flex items-center justify-between">
+                                <span className="text-gray-300 text-sm">{milestone}%</span>
+                                <span className={`text-sm font-bold ${getTextColorForPercentage(percentage)}`}>
+                                  {percentage.toFixed(1)}%
+                                </span>
+                              </div>
+                              <div className="w-full h-6 bg-white/10 rounded-full overflow-hidden relative">
+                                <div
+                                  className={`h-full ${getColorForPercentage(percentage)} transition-all duration-500`}
+                                  style={{ width: `${Math.min(percentage, 100)}%` }}
+                                />
+                              </div>
+                              <p className="text-xs text-gray-400 text-center">{count} usuários</p>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Legend */}
+                    <div className="pt-4 border-t border-white/10">
+                      <div className="flex items-center justify-center gap-6 text-sm">
+                        <div className="flex items-center gap-2">
+                          <div className="w-4 h-4 bg-green-500 rounded"></div>
+                          <span className="text-gray-400">Alta Retenção (≥70%)</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-4 h-4 bg-yellow-500 rounded"></div>
+                          <span className="text-gray-400">Média (40-69%)</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-4 h-4 bg-red-500 rounded"></div>
+                          <span className="text-gray-400">Alto Drop-off (&lt;40%)</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Stats Cards */}
             {stats && (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                {/* Total Leads */}
-                <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-gray-400 text-sm font-medium">Total Leads</h3>
-                    <div className="w-10 h-10 rounded-full bg-[#D4AF37]/20 flex items-center justify-center">
-                      <svg className="w-5 h-5 text-[#D4AF37]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                      </svg>
-                    </div>
-                  </div>
-                  <p className="text-4xl font-bold text-white">{stats.total_leads}</p>
-                </div>
-
-                {/* Mobile vs Desktop */}
+                {/* Device Breakdown */}
                 <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
                   <h3 className="text-gray-400 text-sm font-medium mb-4">Device Breakdown</h3>
                   <div className="space-y-3">
@@ -247,6 +529,21 @@ export default function AdminDashboard() {
                     ))}
                   </div>
                 </div>
+
+                {/* Top Referrers */}
+                {visitStats && visitStats.top_referrers.length > 0 && (
+                  <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+                    <h3 className="text-gray-400 text-sm font-medium mb-4">Top Referrers</h3>
+                    <div className="space-y-2">
+                      {visitStats.top_referrers.slice(0, 5).map((ref, index) => (
+                        <div key={ref.referrer} className="flex items-center justify-between">
+                          <span className="text-white text-sm truncate">{index + 1}. {ref.referrer.substring(0, 30)}</span>
+                          <span className="text-[#D4AF37] font-bold">{ref.count}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
@@ -307,4 +604,3 @@ export default function AdminDashboard() {
     </div>
   );
 }
-

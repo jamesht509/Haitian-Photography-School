@@ -43,6 +43,10 @@
         }
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Visitor Tracking Script -->
+    <script src="/visitor-tracking.js"></script>
+    <!-- Scroll Depth Tracking Script -->
+    <script src="/scroll-tracking.js"></script>
     <style>
         .parallax-bg {
             background-image: url('/images/MIKA44.jpg');
@@ -1423,11 +1427,15 @@
             submitButton.style.opacity = '0.7';
             
             try {
+                // Get visit ID for conversion tracking
+                const visitId = sessionStorage.getItem('current_visit_id');
+                
                 // Send to API
                 const response = await fetch('/api/leads', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        ...(visitId && { 'x-visit-id': visitId }),
                     },
                     body: JSON.stringify(data)
                 });
@@ -1435,6 +1443,11 @@
                 const result = await response.json();
                 
                 if (response.ok && result.success) {
+                    // Track conversion
+                    if (visitId && window.trackConversion) {
+                        window.trackConversion(result.data.id);
+                    }
+                    
                     // Success! Reset form and show success modal with 90% progress
                     form.reset();
                     showSuccessModal();
