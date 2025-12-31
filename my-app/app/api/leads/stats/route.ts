@@ -1,5 +1,12 @@
-import { sql } from '@vercel/postgres';
+import { createPool } from '@vercel/postgres';
 import { NextRequest, NextResponse } from 'next/server';
+
+// Create a connection pool using DATABASE_URL or POSTGRES_URL
+const pool = createPool({
+  connectionString: process.env.DATABASE_URL || process.env.POSTGRES_URL,
+});
+
+const sql = pool.sql;
 
 export async function GET(request: NextRequest) {
   try {
