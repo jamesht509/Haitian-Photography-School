@@ -1,11 +1,25 @@
 import { createPool } from '@vercel/postgres';
 import { NextRequest, NextResponse } from 'next/server';
 
-// Create a connection pool using DATABASE_URL or POSTGRES_URL
-const pool = createPool({
-  connectionString: process.env.DATABASE_URL || process.env.POSTGRES_URL,
-});
+// Get database connection string
+const getConnectionString = () => {
+  const dbUrl = process.env.DATABASE_URL || process.env.POSTGRES_URL;
+  
+  if (!dbUrl) {
+    console.error('[DB ERROR] No database URL found!');
+    console.error('[DB ERROR] DATABASE_URL:', process.env.DATABASE_URL ? 'SET' : 'NOT SET');
+    console.error('[DB ERROR] POSTGRES_URL:', process.env.POSTGRES_URL ? 'SET' : 'NOT SET');
+    throw new Error('Database connection string is not configured. Please set DATABASE_URL or POSTGRES_URL environment variable.');
+  }
+  
+  return dbUrl;
+};
 
+// Create a connection pool using DATABASE_URL or POSTGRES_URL
+const connectionString = getConnectionString();
+const pool = createPool({
+  connectionString: connectionString,
+});
 const sql = pool.sql;
 
 // Helper function to detect device type from User-Agent
@@ -173,26 +187,38 @@ export async function GET(request: NextRequest) {
     }
     
     // Fetch all leads
-    const result = await sql`
-      SELECT 
-        id,
-        name,
-        whatsapp,
-        email,
-        city_from_form,
-        ip_address,
-        device_type,
-        referrer,
-        created_at
-      FROM leads
-      ORDER BY created_at DESC
-    `;
-    
-    return NextResponse.json({
-      success: true,
-      leads: result.rows,
-      count: result.rowCount
-    });
+    try {
+      const result = await sql`
+        SELECT 
+          id,
+          name,
+          whatsapp,
+          email,
+          city_from_form,
+          ip_address,
+          device_type,
+          referrer,
+          created_at
+        FROM leads
+        ORDER BY created_at DESC
+      `;
+      
+      return NextResponse.json({
+        success: true,
+        leads: result.rows,
+        count: result.rowCount
+      });
+    } catch (dbError) {
+      console.error('[DB ERROR] Failed to fetch leads:', dbError);
+      return NextResponse.json(
+        { 
+          error: 'Database connection failed',
+          details: dbError instanceof Error ? dbError.message : 'Unknown error',
+          hint: 'Please check DATABASE_URL or POSTGRES_URL environment variable'
+        },
+        { status: 500 }
+      );
+    }
     
   } catch (error) {
     console.error('Error fetching leads:', error);
