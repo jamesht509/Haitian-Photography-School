@@ -124,25 +124,50 @@ export async function GET(request: NextRequest) {
     // Trim whitespace from password to avoid issues
     const adminPassword = (process.env.ADMIN_PASSWORD || 'admin123').trim();
     
-    // Debug logging (only in development or if explicitly enabled)
-    if (process.env.NODE_ENV === 'development' || process.env.DEBUG_AUTH === 'true') {
-      console.log('[AUTH DEBUG] Admin password configured:', adminPassword ? 'YES' : 'NO');
-      console.log('[AUTH DEBUG] Password length:', adminPassword.length);
-      console.log('[AUTH DEBUG] Auth header received:', authHeader ? 'YES' : 'NO');
-      if (authHeader) {
-        console.log('[AUTH DEBUG] Header length:', authHeader.length);
-        console.log('[AUTH DEBUG] Expected:', `Bearer ${adminPassword}`);
-        console.log('[AUTH DEBUG] Received:', authHeader);
-      }
-    }
-    
     // Normalize comparison - trim both sides
     const expectedHeader = `Bearer ${adminPassword}`;
     const receivedHeader = authHeader?.trim() || '';
     
+    // Always log for debugging (safe - doesn't expose full password)
+    console.log('[AUTH DEBUG] ========================================');
+    console.log('[AUTH DEBUG] Admin password configured:', !!process.env.ADMIN_PASSWORD);
+    console.log('[AUTH DEBUG] Password length:', adminPassword.length);
+    console.log('[AUTH DEBUG] Password first char:', adminPassword[0] || 'N/A');
+    console.log('[AUTH DEBUG] Password last char:', adminPassword[adminPassword.length - 1] || 'N/A');
+    console.log('[AUTH DEBUG] Expected header length:', expectedHeader.length);
+    console.log('[AUTH DEBUG] Received header:', authHeader ? 'YES' : 'NO');
+    if (authHeader) {
+      console.log('[AUTH DEBUG] Received header length:', receivedHeader.length);
+      console.log('[AUTH DEBUG] Headers match:', receivedHeader === expectedHeader);
+      // Compare character by character for debugging
+      if (receivedHeader.length === expectedHeader.length) {
+        for (let i = 0; i < Math.min(receivedHeader.length, 20); i++) {
+          if (receivedHeader[i] !== expectedHeader[i]) {
+            console.log(`[AUTH DEBUG] Mismatch at position ${i}: expected '${expectedHeader[i]}' (${expectedHeader.charCodeAt(i)}), got '${receivedHeader[i]}' (${receivedHeader.charCodeAt(i)})`);
+            break;
+          }
+        }
+      } else {
+        console.log('[AUTH DEBUG] Length mismatch:', {
+          expected: expectedHeader.length,
+          received: receivedHeader.length,
+          difference: Math.abs(expectedHeader.length - receivedHeader.length)
+        });
+      }
+    }
+    console.log('[AUTH DEBUG] ========================================');
+    
     if (receivedHeader !== expectedHeader) {
       return NextResponse.json(
-        { error: 'Unauthorized' },
+        { 
+          error: 'Unauthorized',
+          debug: process.env.NODE_ENV === 'development' ? {
+            expectedLength: expectedHeader.length,
+            receivedLength: receivedHeader.length,
+            passwordConfigured: !!process.env.ADMIN_PASSWORD,
+            passwordLength: adminPassword.length
+          } : undefined
+        },
         { status: 401 }
       );
     }

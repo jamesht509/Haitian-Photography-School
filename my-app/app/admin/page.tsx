@@ -33,23 +33,38 @@ export default function AdminDashboard() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
     
     try {
+      const authHeader = `Bearer ${password}`;
+      console.log('[FRONTEND] Attempting login...');
+      console.log('[FRONTEND] Password length:', password.length);
+      console.log('[FRONTEND] Auth header:', authHeader);
+      console.log('[FRONTEND] Auth header length:', authHeader.length);
+      
       const response = await fetch('/api/leads', {
         headers: {
-          'Authorization': `Bearer ${password}`
+          'Authorization': authHeader
         }
       });
+      
+      console.log('[FRONTEND] Response status:', response.status);
+      console.log('[FRONTEND] Response ok:', response.ok);
       
       if (response.ok) {
         setIsAuthenticated(true);
         localStorage.setItem('admin_token', password);
         fetchData(password);
       } else {
-        setError('Senha incorreta');
+        const errorData = await response.json().catch(() => ({}));
+        console.error('[FRONTEND] Login failed:', errorData);
+        setError(`Senha incorreta (Status: ${response.status})`);
       }
     } catch (err) {
-      setError('Erro ao fazer login');
+      console.error('[FRONTEND] Login error:', err);
+      setError(`Erro ao fazer login: ${err instanceof Error ? err.message : 'Erro desconhecido'}`);
+    } finally {
+      setLoading(false);
     }
   };
 
