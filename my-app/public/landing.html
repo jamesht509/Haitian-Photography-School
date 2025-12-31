@@ -26,10 +26,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         .parallax-bg {
-            background-image: url('https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=2000&h=1200&fit=crop&crop=center');
+            background-image: url('/images/MIKA44.jpg');
             background-size: cover;
-            background-position: center;
+            background-position: center top;
             background-attachment: fixed;
+            z-index: -100;
+            pointer-events: none;
         }
 
         .glassmorphism {
@@ -37,6 +39,88 @@
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Dark Overlay - Send to back */
+        .dark-overlay {
+            z-index: -100;
+            pointer-events: none;
+        }
+
+        /* Hero Content - Bring to front */
+        .hero-content {
+            position: relative;
+            z-index: 100;
+            pointer-events: auto;
+        }
+
+        /* Form Container - Ensure interactivity */
+        .form-container {
+            position: relative;
+            z-index: 100;
+            pointer-events: auto;
+        }
+
+        /* Form inputs and buttons - Ensure pointer events */
+        form input, form button, form textarea, form select {
+            pointer-events: auto !important;
+        }
+
+        /* Specific form elements - Force pointer events */
+        input[name="name"], input[name="whatsapp"], input[name="email"], input[name="city"],
+        button[type="submit"] {
+            pointer-events: auto !important;
+            cursor: text !important;
+        }
+
+        button[type="submit"] {
+            cursor: pointer !important;
+        }
+
+        /* Ensure form container allows interactions */
+        form {
+            pointer-events: auto !important;
+        }
+
+        /* CTA Buttons - Ensure they work */
+        .cta-button {
+            position: relative;
+            z-index: 200;
+            pointer-events: auto !important;
+            cursor: pointer !important;
+        }
+
+        /* Form inputs - Ensure I-beam cursor */
+        input[type="text"], input[type="email"], input[type="tel"], textarea, select {
+            cursor: text !important;
+        }
+
+        /* Ensure all interactive elements have proper cursors */
+        button:hover, input:hover, textarea:hover, select:hover {
+            cursor: pointer;
+        }
+
+        /* Success Modal - Ensure it doesn't interfere */
+        .success-modal {
+            z-index: 9999;
+            pointer-events: auto;
+        }
+
+        /* Main content areas - Ensure they receive events */
+        main, section, .hero-section, .content-area {
+            pointer-events: auto;
+        }
+
+        /* Body should not block interactions */
+        body {
+            pointer-events: none;
+        }
+
+        /* Main content must explicitly allow interactions */
+        main, section, header, nav, footer, .hero-section, .content-area,
+        .hero-content, .form-container, .cta-button, form,
+        input, button, textarea, select, a {
+            pointer-events: auto !important;
         }
 
         .gradient-gold {
@@ -243,11 +327,13 @@
             display: none;
             opacity: 0;
             transition: opacity 0.5s ease-out;
+            pointer-events: none;
         }
 
         .success-modal.active {
             display: flex;
             opacity: 1;
+            pointer-events: auto;
         }
 
         .progress-container {
@@ -313,6 +399,142 @@
         .fade-in-up {
             animation: fadeInUp 0.8s ease-out forwards;
         }
+
+        /* Luxury Header Styles */
+        .luxury-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1.5rem 0;
+            background: linear-gradient(to bottom, rgba(5, 5, 5, 0.8), transparent);
+        }
+
+        .logo-container {
+            text-align: center;
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 2rem;
+            letter-spacing: 0.1em;
+            color: #D4AF37;
+            text-transform: uppercase;
+        }
+
+        .logo-monogram {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 3.5rem;
+            background: linear-gradient(135deg, #D4AF37 0%, #E6B800 50%, #B8860B 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 0.2em;
+        }
+
+        .logo-subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.3em;
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: uppercase;
+            margin-top: 0.25rem;
+        }
+
+        /* Enhanced Glassmorphism */
+        .glassmorphism-premium {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        /* Gold gradient text */
+        .text-gold-gradient {
+            background: linear-gradient(135deg, #D4AF37 0%, #E6B800 50%, #B8860B 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Gold section background */
+        .gold-section-bg {
+            background: linear-gradient(135deg, #D4AF37 0%, #E6B800 50%, #B8860B 100%);
+        }
+
+        /* Pulsing gold button */
+        @keyframes pulseGold {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 40px rgba(212, 175, 55, 0.8), 0 0 60px rgba(212, 175, 55, 0.4);
+            }
+        }
+
+        .pulse-gold {
+            animation: pulseGold 2s ease-in-out infinite;
+        }
+
+        /* Bento card with image */
+        .bento-card-image {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bento-card-image img {
+            transition: transform 0.5s ease, filter 0.5s ease;
+        }
+
+        .bento-card-image:hover img {
+            transform: scale(1.05);
+        }
+
+        .bento-card-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(5, 5, 5, 0.95) 0%, rgba(5, 5, 5, 0.7) 40%, transparent 100%);
+        }
+
+        /* Urgency section background */
+        .urgency-bg {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .urgency-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: url('/images/MIKA15.jpg');
+            background-size: cover;
+            background-position: center;
+            filter: blur(8px);
+            opacity: 0.3;
+            z-index: -2;
+        }
+
+        .urgency-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9));
+            z-index: -1;
+        }
+
+        /* Hourglass animation */
+        @keyframes hourglassPulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        .hourglass-icon {
+            animation: hourglassPulse 2s ease-in-out infinite;
+        }
     </style>
 </head>
 <body class="bg-dark-bg text-white font-sans overflow-x-hidden">
@@ -359,8 +581,8 @@
                 </div>
 
                 <!-- WhatsApp Button -->
-                <a 
-                    href="https://tyn.bio/Class8Janvye" 
+                <a
+                    href="https://tyn.bio/Class8Janvye"
                     target="_blank"
                     rel="noopener noreferrer"
                     class="whatsapp-btn inline-flex items-center gap-3 text-white font-bold px-10 py-6 rounded-2xl text-xl"
@@ -380,30 +602,35 @@
         </div>
     </div>
 
+
     <!-- Hero Section with Parallax -->
     <section class="relative h-screen flex items-center justify-center parallax-bg">
         <!-- Dark Overlay -->
-        <div class="absolute inset-0 bg-black bg-opacity-60"></div>
+        <div class="absolute inset-0 dark-overlay" style="background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.85) 100%);"></div>
 
         <!-- Content Container -->
-        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center hero-content">
             <div class="grid lg:grid-cols-2 gap-12 items-center">
                 <!-- Left Content -->
                 <div class="text-left lg:text-left">
                     <!-- Main Headline -->
                     <h1 class="text-4xl sm:text-5xl lg:text-7xl font-serif font-bold mb-6 text-shadow leading-tight">
                         <span class="text-white">Sispann reve,</span><br>
-                        <span class="text-gold">kòmanse tire!</span><br>
+                        <span class="text-gold">kòmanse aji</span><br>
                         <span class="text-white text-3xl sm:text-4xl lg:text-5xl">Vin yon fotograf pwofesyonèl.</span>
                     </h1>
 
-                    <!-- Sub-headline -->
-                    <p class="text-lg sm:text-xl lg:text-2xl mb-6 text-gray-300 font-light leading-relaxed max-w-2xl">
-                        Valè klas sa a se <span class="text-gold font-bold">$497</span>, men enskripsyon an <span class="text-gold font-bold">GRATIS</span> jodi a. Aprann teknik avanse nan Boston ak modèl pwofesyonèl.
-                    </p>
+                    <!-- Price Offer - Maximum Impact -->
+                    <div class="mb-8">
+                        <p class="text-lg sm:text-xl text-gray-300 mb-4">Valè klas sa a se</p>
+                        <div class="flex flex-wrap items-center gap-4 mb-4">
+                            <span class="text-5xl sm:text-6xl lg:text-7xl font-serif font-bold text-gold-gradient line-through opacity-70">$497</span>
+                        </div>
+                        <p class="text-lg sm:text-xl text-gray-300 font-light">Enskripsyon gratis jodi a. Aprann teknik avanse nan Boston ak modèl pwofesyonèl.</p>
+                    </div>
 
                     <!-- CTA Button -->
-                    <button class="gradient-gold text-dark-bg font-bold px-8 py-4 rounded-lg hover:opacity-90 transition-opacity duration-300 text-lg shadow-lg hover-lift">
+                    <button class="gradient-gold text-dark-bg font-bold px-8 py-4 rounded-lg hover:opacity-90 transition-opacity duration-300 text-lg shadow-lg hover-lift cta-button">
                         Enskri Gratis Kounye a
                     </button>
 
@@ -414,9 +641,9 @@
                 </div>
 
                 <!-- Registration Form -->
-                <div class="lg:pl-8">
-                    <div class="glassmorphism rounded-2xl p-8 max-w-md mx-auto hover-lift">
-                        <h2 class="text-2xl font-serif font-bold mb-6 text-center text-gold">
+                <div class="lg:pl-8 form-container">
+                    <div class="glassmorphism-premium rounded-3xl p-8 md:p-10 max-w-md mx-auto hover-lift">
+                        <h2 class="text-2xl md:text-3xl font-serif font-bold mb-6 text-center text-gold">
                             Rezève Klas ou
                         </h2>
 
@@ -480,7 +707,7 @@
                             <!-- Submit Button -->
                             <button
                                 type="submit"
-                                class="w-full gradient-gold text-dark-bg font-bold py-4 px-6 rounded-lg hover:opacity-90 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-lg"
+                                class="w-full gradient-gold text-dark-bg font-bold py-4 px-6 rounded-lg hover:opacity-90 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-lg cta-button"
                             >
                                 Enskri Gratis Kounye a
                             </button>
@@ -600,31 +827,40 @@
         </div>
     </section>
 
-    <!-- Pricing & Payment Section -->
-    <section class="py-24 bg-black relative overflow-hidden">
+    <!-- Pricing & Payment Section - Golden Ticket -->
+    <section class="py-24 relative overflow-hidden">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="glassmorphism rounded-3xl p-8 md:p-12 text-center">
-                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-white mb-6">
-                    Envesti nan lavni w <span class="text-gold">san presyon</span>
+            <div class="gold-section-bg rounded-3xl p-8 md:p-12 lg:p-16 text-center shadow-2xl">
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-dark-bg mb-6">
+                    Envesti nan lavni w <span class="text-white/90">san presyon</span>
                 </h2>
-                <p class="text-lg sm:text-xl text-gray-300 leading-relaxed max-w-3xl mx-auto mb-8">
-                    Klas la vo <span class="text-gold font-bold text-2xl">$497</span>, men nou rann li fasil pou ou. Ou ka peye an <span class="text-gold font-bold">4 fwa san enterè</span>. Pa gen okenn depo obligatwa pou w rezève plas ou jodi a.
+                
+                <!-- Massive Crossed Out Price -->
+                <div class="mb-8">
+                    <p class="text-lg text-dark-bg/80 mb-2">Valè konplè:</p>
+                    <span class="text-6xl sm:text-7xl lg:text-8xl font-serif font-bold text-dark-bg/60 line-through">$497</span>
+                </div>
+                
+                <p class="text-lg sm:text-xl text-dark-bg/90 leading-relaxed max-w-3xl mx-auto mb-8">
+                    Nou rann li fasil pou ou. Ou ka peye an <span class="text-dark-bg font-bold">4 fwa san enterè</span>. Pa gen okenn depo obligatwa pou w rezève plas ou jodi a.
                 </p>
+                
                 <div class="flex flex-wrap justify-center gap-4 mt-8">
-                    <div class="bg-white/5 border border-gold/30 rounded-xl px-6 py-4">
-                        <p class="text-gold font-bold text-2xl">$124.25</p>
-                        <p class="text-gray-400 text-sm">× 4 peman</p>
+                    <div class="bg-dark-bg/20 border border-dark-bg/30 rounded-xl px-6 py-4">
+                        <p class="text-dark-bg font-bold text-2xl">$124.25</p>
+                        <p class="text-dark-bg/70 text-sm">× 4 peman</p>
                     </div>
-                    <div class="bg-white/5 border border-gold/30 rounded-xl px-6 py-4">
-                        <p class="text-gold font-bold text-2xl">$0</p>
-                        <p class="text-gray-400 text-sm">Depo jodi a</p>
+                    <div class="bg-dark-bg/20 border border-dark-bg/30 rounded-xl px-6 py-4">
+                        <p class="text-dark-bg font-bold text-2xl">$0</p>
+                        <p class="text-dark-bg/70 text-sm">Depo jodi a</p>
                     </div>
-                    <div class="bg-white/5 border border-gold/30 rounded-xl px-6 py-4">
-                        <p class="text-gold font-bold text-2xl">0%</p>
-                        <p class="text-gray-400 text-sm">Enterè</p>
+                    <div class="bg-dark-bg/20 border border-dark-bg/30 rounded-xl px-8 py-4">
+                        <p class="text-dark-bg font-bold text-3xl">0%</p>
+                        <p class="text-dark-bg/70 text-sm font-semibold">Enterè</p>
                     </div>
                 </div>
-                <button class="mt-8 gradient-gold text-dark-bg font-bold px-10 py-5 rounded-lg hover:opacity-90 transition-all duration-300 shadow-lg hover-lift transform hover:scale-105 text-xl">
+                
+                <button class="mt-10 bg-dark-bg text-gold font-bold px-12 py-5 rounded-xl hover:bg-dark-bg/90 transition-all duration-300 shadow-lg hover-lift transform hover:scale-105 text-xl border-2 border-dark-bg">
                     Rezève Plas ou Gratis
                 </button>
             </div>
@@ -645,107 +881,113 @@
 
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Card 1: Kijan pou kenbe kamera a -->
-                <div class="mastery-card glassmorphism rounded-2xl p-8 flex flex-col h-full">
-                    <div class="w-12 h-12 rounded-xl gradient-gold flex items-center justify-center mb-6">
-                        <svg class="w-6 h-6 text-dark-bg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
-                        </svg>
+                <div class="mastery-card bento-card-image glassmorphism rounded-2xl overflow-hidden h-80">
+                    <img src="/images/Kenbe Camera.jpg" alt="Kijan pou kenbe kamera a" class="w-full h-full object-cover object-center">
+                    <div class="bento-card-overlay"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-6">
+                        <h3 class="text-2xl font-serif font-extrabold text-gold mb-2">Kijan pou kenbe kamera a</h3>
+                        <p class="text-gray-300 text-sm leading-relaxed">
+                            Aprann apiyman sou sousi, pozisyon koud, pye, ak jan pou w respire pou foto w pa janm flou.
+                        </p>
                     </div>
-                    <h3 class="text-xl font-serif font-bold text-gold mb-4">Kijan pou kenbe kamera a</h3>
-                    <p class="text-gray-300 leading-relaxed">
-                        Aprann apiyman sou sousi, pozisyon koud, pye, ak jan pou w respire pou foto w pa janm flou.
-                    </p>
                 </div>
 
                 <!-- Card 2: Metrize Istoryam nan -->
-                <div class="mastery-card glassmorphism rounded-2xl p-8 flex flex-col h-full">
-                    <div class="w-12 h-12 rounded-xl gradient-gold flex items-center justify-center mb-6">
-                        <svg class="w-6 h-6 text-dark-bg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                        </svg>
+                <div class="mastery-card bento-card-image glassmorphism rounded-2xl overflow-hidden h-80">
+                    <img src="/images/nikon-histogram.jpg" alt="Metrize Istoryam nan" class="w-full h-full object-cover object-center">
+                    <div class="bento-card-overlay"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-6">
+                        <h3 class="text-2xl font-serif font-extrabold text-gold mb-2">Metrize Istoryam nan</h3>
+                        <p class="text-gray-300 text-sm leading-relaxed">
+                            Aprann li Blacks, Shadows, ak Highlights pou w gen yon ekspozisyon pafè chak fwa.
+                        </p>
                     </div>
-                    <h3 class="text-xl font-serif font-bold text-gold mb-4">Metrize Istoryam nan</h3>
-                    <p class="text-gray-300 leading-relaxed">
-                        Aprann li Blacks, Shadows, ak Highlights pou w gen yon ekspozisyon pafè chak fwa.
-                    </p>
                 </div>
 
                 <!-- Card 3: Mòd Kamera yo -->
-                <div class="mastery-card glassmorphism rounded-2xl p-8 flex flex-col h-full">
-                    <div class="w-12 h-12 rounded-xl gradient-gold flex items-center justify-center mb-6">
-                        <svg class="w-6 h-6 text-dark-bg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
-                        </svg>
+                <div class="mastery-card bento-card-image glassmorphism rounded-2xl overflow-hidden h-80">
+                    <img src="/images/camera mode.jpg" alt="Mòd Kamera yo" class="w-full h-full object-cover object-center">
+                    <div class="bento-card-overlay"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-6">
+                        <h3 class="text-2xl font-serif font-extrabold text-gold mb-2">Mòd Kamera yo</h3>
+                        <p class="text-gray-300 text-sm leading-relaxed">
+                            Sispann itilize mòd Auto. Aprann Mòd Manyèl (M), Aperture Priority (Av), ak Shutter Priority (Tv).
+                        </p>
                     </div>
-                    <h3 class="text-xl font-serif font-bold text-gold mb-4">Mòd Kamera yo</h3>
-                    <p class="text-gray-300 leading-relaxed">
-                        Sispann itilize mòd Auto. Aprann Mòd Manyèl (M), Aperture Priority (Av), ak Shutter Priority (Tv).
-                    </p>
                 </div>
 
                 <!-- Card 4: Fè Foto Fanm -->
-                <div class="mastery-card glassmorphism rounded-2xl p-8 flex flex-col h-full">
-                    <div class="w-12 h-12 rounded-xl gradient-gold flex items-center justify-center mb-6">
-                        <svg class="w-6 h-6 text-dark-bg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                        </svg>
+                <div class="mastery-card bento-card-image glassmorphism rounded-2xl overflow-hidden h-80">
+                    <img src="/images/MIKA15.jpg" alt="Fè Foto Fanm" class="w-full h-full object-cover object-top">
+                    <div class="bento-card-overlay"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-6">
+                        <h3 class="text-2xl font-serif font-extrabold text-gold mb-2">Fè Foto Fanm</h3>
+                        <p class="text-gray-300 text-sm leading-relaxed">
+                            Metriz poz pou fanm (Kou, Janm, Zepòl) ak jan pou w fè modèl la santi l alèz.
+                        </p>
                     </div>
-                    <h3 class="text-xl font-serif font-bold text-gold mb-4">Fè Foto Fanm</h3>
-                    <p class="text-gray-300 leading-relaxed">
-                        Metriz poz pou fanm (Kou, Janm, Zepòl) ak jan pou w fè modèl la santi l alèz.
-                    </p>
                 </div>
 
                 <!-- Card 5: Aprann fè Portraits -->
-                <div class="mastery-card glassmorphism rounded-2xl p-8 flex flex-col h-full">
-                    <div class="w-12 h-12 rounded-xl gradient-gold flex items-center justify-center mb-6">
-                        <svg class="w-6 h-6 text-dark-bg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                        </svg>
+                <div class="mastery-card bento-card-image glassmorphism rounded-2xl overflow-hidden h-80">
+                    <img src="/images/MIKA44.jpg" alt="Aprann fè Portraits" class="w-full h-full object-cover object-center" style="object-position: 50% 30%;">
+                    <div class="bento-card-overlay"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-6">
+                        <h3 class="text-2xl font-serif font-extrabold text-gold mb-2">Aprann fè Portraits</h3>
+                        <p class="text-gray-300 text-sm leading-relaxed">
+                            Teknik koupe foto (Crop) ak jan pou w swiv Règ de Twa (Rule of Thirds).
+                        </p>
                     </div>
-                    <h3 class="text-xl font-serif font-bold text-gold mb-4">Aprann fè Portraits</h3>
-                    <p class="text-gray-300 leading-relaxed">
-                        Teknik koupe foto (Crop) ak jan pou w swiv Règ de Twa (Rule of Thirds).
-                    </p>
                 </div>
 
                 <!-- Card 6: Software & AI (Full Width) -->
-                <div class="mastery-card glassmorphism rounded-2xl p-8 flex flex-col h-full md:col-span-2 lg:col-span-3">
-                    <div class="w-12 h-12 rounded-xl gradient-gold flex items-center justify-center mb-6">
-                        <svg class="w-6 h-6 text-dark-bg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                        </svg>
+                <div class="mastery-card bento-card-image glassmorphism rounded-2xl overflow-hidden h-80 md:col-span-2 lg:col-span-1">
+                    <img src="/images/MIKA40.jpg" alt="Edisyon Pwofesyonèl ak AI" class="w-full h-full object-cover object-center" style="filter: saturate(0.8) contrast(1.1);">
+                    <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 to-transparent">
+                        <h3 class="text-2xl font-serif font-extrabold text-gold mb-2">Edisyon AI</h3>
+                        <p class="text-gray-300 text-sm leading-relaxed">
+                            Aprann edisyon ak Lightroom, Photoshop, ak AI. Plugin RA, Actions Ps, ak Presets Lr gratis!
+                        </p>
                     </div>
-                    <h3 class="text-2xl font-serif font-bold text-gold mb-4">Edisyon Pwofesyonèl ak AI</h3>
-                    <p class="text-gray-300 leading-relaxed text-lg">
-                        Aprann edisyon pwofesyonèl ak Lightroom, Photoshop, ak Entelijans Atifisyèl (AI). N ap ba w Plugin RA, Actions Ps, ak Presets Lr gratis!
-                    </p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Logistics & Urgency Section -->
-    <section class="py-24 bg-black relative overflow-hidden">
-        <!-- Glow background element -->
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gold/5 rounded-full blur-[120px] pointer-events-none"></div>
+    <section class="py-24 urgency-bg relative overflow-hidden">
+        <!-- Blurry Background Image -->
+        <div class="absolute inset-0 z-[-3]">
+            <img src="/images/MIKA36.jpg" alt="" class="w-full h-full object-cover" style="filter: blur(12px); transform: scale(1.1);">
+        </div>
+        <!-- Dark Overlay -->
+        <div class="absolute inset-0 z-[-2]" style="background: linear-gradient(135deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.75) 50%, rgba(0,0,0,0.9) 100%);"></div>
+        <!-- Gold Glow -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gold/10 rounded-full blur-[150px] pointer-events-none z-[-1]"></div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="grid lg:grid-cols-2 gap-16 items-center">
-                <!-- Left: Big Date -->
+                <!-- Left: Massive Date -->
                 <div class="text-center lg:text-left">
-                    <div class="inline-block px-4 py-1 rounded-full bg-gold/10 border border-gold/20 text-gold text-sm font-bold tracking-widest uppercase mb-6">
-                        Dat la ap pwoche
+                    <!-- Hourglass Icon -->
+                    <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-gold/10 border border-gold/30 text-gold text-sm font-bold tracking-widest uppercase mb-8">
+                        <svg class="w-5 h-5 hourglass-icon" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M6 2v6l4 4-4 4v6h12v-6l-4-4 4-4V2H6zm10 14.5V20H8v-3.5l4-4 4 4zm-4-5l-4-4V4h8v3.5l-4 4z"/>
+                        </svg>
+                        <span>Tan ap kouri</span>
                     </div>
+                    
                     <div class="date-glow">
-                        <h2 class="text-6xl sm:text-7xl lg:text-8xl font-serif font-bold text-white leading-none mb-4">
-                            Samdi <br>
-                            <span class="text-gold">10 Janvye</span>
+                        <h2 class="text-7xl sm:text-8xl lg:text-9xl font-serif font-bold text-white leading-none mb-2" style="text-shadow: 0 4px 30px rgba(0,0,0,0.5);">
+                            Samdi
                         </h2>
-                        <p class="text-3xl font-serif text-white/80">Boston, MA</p>
+                        <h2 class="text-7xl sm:text-8xl lg:text-9xl font-serif font-bold leading-none mb-4 text-gold-gradient" style="text-shadow: 0 4px 30px rgba(212,175,55,0.3);">
+                            10 Janvye
+                        </h2>
+                        <p class="text-3xl sm:text-4xl font-serif text-white/90 mt-6">Boston, MA</p>
                     </div>
-                    <p class="text-xl text-gray-400 mt-8 max-w-lg">
-                        Yon jou sèlman pou w chanje vizyon w sou fotografi.
+                    <p class="text-xl text-gray-300 mt-8 max-w-lg">
+                        Yon jou sèlman pou w chanje vizyon w sou fotografi. Pa rate okazyon sa a.
                     </p>
                 </div>
 
@@ -769,12 +1011,12 @@
                         <p class="text-lg text-gray-200 mt-1">N ap moutre w kijan pou w monte yon <span class="text-gold font-bold">"Kit Bon Mache"</span> pou w kòmanse fè kòb jodi a.</p>
                     </div>
 
-                    <!-- Urgent CTA -->
+                    <!-- Urgent CTA with Pulse -->
                     <div class="pt-8">
-                        <button class="w-full gradient-gold text-dark-bg font-bold py-5 px-8 rounded-2xl hover:opacity-90 transition-all duration-300 shadow-[0_0_30px_rgba(212,175,55,0.3)] hover:shadow-[0_0_50px_rgba(212,175,55,0.5)] transform hover:scale-[1.02] text-xl">
+                        <button class="w-full gradient-gold text-dark-bg font-bold py-6 px-8 rounded-2xl hover:opacity-90 transition-all duration-300 pulse-gold transform hover:scale-[1.02] text-xl">
                             Enskri Gratis Kounye a
                         </button>
-                        <p class="text-center text-gray-500 text-sm mt-4">
+                        <p class="text-center text-gray-400 text-sm mt-4">
                             * Valè $497 - Enskripsyon gratis. Pa gen depo.
                         </p>
                     </div>
@@ -1146,26 +1388,19 @@
             submitButton.style.opacity = '0.7';
             
             try {
-                // Send to API
-                const response = await fetch('/api/leads', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-                });
-                
-                const result = await response.json();
-                
-                if (response.ok && result.success) {
-                    // Success! Reset form and show success modal
-                    form.reset();
-                    showSuccessModal();
-                    
-                    console.log('✅ Lead captured:', result.data);
-                } else {
-                    throw new Error(result.error || 'Failed to submit');
-                }
+                // For static demo - simulate API success
+                // In production, this would connect to Next.js API
+                console.log('📝 Form submitted (demo mode):', data);
+
+                // Simulate API delay
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                // Always show success for demo purposes
+                form.reset();
+                showSuccessModal();
+
+                console.log('✅ Lead captured (demo):', data);
+
             } catch (error) {
                 console.error('Form submission error:', error);
                 alert('Te gen yon erè. Tanpri eseye ankò oswa kontakte nou sou WhatsApp.');
@@ -1201,6 +1436,13 @@
         // INITIALIZE
         // ============================================
         document.addEventListener('DOMContentLoaded', () => {
+            // Ensure success modal is hidden initially
+            const successModal = document.getElementById('successModal');
+            if (successModal) {
+                successModal.style.display = 'none';
+                successModal.classList.remove('active');
+            }
+
             renderChapterNav();
             renderBookContent(false);
             updateProgress();
