@@ -121,9 +121,26 @@ export async function GET(request: NextRequest) {
   try {
     // Check admin password from query params or header
     const authHeader = request.headers.get('authorization');
-    const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+    // Trim whitespace from password to avoid issues
+    const adminPassword = (process.env.ADMIN_PASSWORD || 'admin123').trim();
     
-    if (authHeader !== `Bearer ${adminPassword}`) {
+    // Debug logging (only in development or if explicitly enabled)
+    if (process.env.NODE_ENV === 'development' || process.env.DEBUG_AUTH === 'true') {
+      console.log('[AUTH DEBUG] Admin password configured:', adminPassword ? 'YES' : 'NO');
+      console.log('[AUTH DEBUG] Password length:', adminPassword.length);
+      console.log('[AUTH DEBUG] Auth header received:', authHeader ? 'YES' : 'NO');
+      if (authHeader) {
+        console.log('[AUTH DEBUG] Header length:', authHeader.length);
+        console.log('[AUTH DEBUG] Expected:', `Bearer ${adminPassword}`);
+        console.log('[AUTH DEBUG] Received:', authHeader);
+      }
+    }
+    
+    // Normalize comparison - trim both sides
+    const expectedHeader = `Bearer ${adminPassword}`;
+    const receivedHeader = authHeader?.trim() || '';
+    
+    if (receivedHeader !== expectedHeader) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }

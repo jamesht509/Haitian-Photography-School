@@ -12,9 +12,14 @@ export async function GET(request: NextRequest) {
   try {
     // Check admin password
     const authHeader = request.headers.get('authorization');
-    const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+    // Trim whitespace from password to avoid issues
+    const adminPassword = (process.env.ADMIN_PASSWORD || 'admin123').trim();
     
-    if (authHeader !== `Bearer ${adminPassword}`) {
+    // Normalize comparison - trim both sides
+    const expectedHeader = `Bearer ${adminPassword}`;
+    const receivedHeader = authHeader?.trim() || '';
+    
+    if (receivedHeader !== expectedHeader) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
