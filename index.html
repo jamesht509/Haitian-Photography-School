@@ -51,7 +51,7 @@
         .parallax-bg {
             background-image: url('/images/MIKA44.jpg');
             background-size: cover;
-            background-position: center top;
+            background-position: center center;
             background-attachment: fixed;
             z-index: -10;
             pointer-events: none;
@@ -66,7 +66,7 @@
 
         /* Dark Overlay - Send to back */
         .dark-overlay {
-            z-index: -10;
+            z-index: 0;
             pointer-events: none;
         }
 
@@ -80,8 +80,20 @@
         /* Hero Content - Bring to front */
         .hero-content {
             position: relative;
-            z-index: 50;
+            z-index: 10;
             pointer-events: auto;
+            display: flex;
+            width: 100%;
+        }
+
+        /* Ensure text container is visible on mobile */
+        .hero-text-container {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            width: 100%;
+            position: relative;
+            z-index: 20;
         }
 
         /* Form Container - Ensure interactivity */
@@ -689,15 +701,15 @@
 
 
     <!-- Hero Section with Parallax -->
-    <section class="relative min-h-screen flex items-center justify-center parallax-bg py-20 sm:py-0">
+    <section class="relative min-h-screen flex items-center justify-center parallax-bg pt-20 md:pt-0 py-20 md:py-0">
         <!-- Dark Overlay - Stronger on mobile for better text contrast -->
-        <div class="absolute inset-0 dark-overlay" style="background: linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.9) 100%);"></div>
+        <div class="absolute inset-0 dark-overlay" style="background: linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.9) 100%); z-index: 0;"></div>
 
         <!-- Content Container -->
         <div class="relative z-10 max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 hero-content">
-            <div class="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-                <!-- Left Content - Centered on mobile, left-aligned on desktop -->
-                <div class="text-center md:text-left lg:text-left w-full lg:w-auto order-1 mb-8 md:mb-0">
+            <div class="flex flex-col md:flex-row gap-8 md:gap-12 items-center w-full">
+                <!-- Text Container - FIRST on mobile, visible by default -->
+                <div class="hero-text-container text-center md:text-left w-full md:w-auto flex-shrink-0">
                     <!-- Main Headline -->
                     <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-serif font-bold mb-6 text-shadow leading-tight">
                         <span class="text-white">Sispann reve,</span><br>
@@ -725,8 +737,8 @@
                     </p>
                 </div>
 
-                <!-- Registration Form -->
-                <div class="w-full lg:pl-8 form-container order-2 md:order-none">
+                <!-- Registration Form - SECOND on mobile -->
+                <div class="w-full md:w-auto md:pl-8 form-container flex-shrink-0">
                     <div class="glassmorphism-premium rounded-3xl p-6 sm:p-8 md:p-10 max-w-md mx-auto hover-lift w-full">
                         <h2 class="text-xl sm:text-2xl md:text-3xl font-serif font-bold mb-6 text-center text-gold">
                             Rezève Klas ou
