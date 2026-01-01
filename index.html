@@ -1992,12 +1992,14 @@
                 });
                 
                 // Check if response is ok before parsing JSON
+                // Clone response to avoid "body stream already read" error
+                const responseClone = response.clone();
                 let result;
                 try {
                     result = await response.json();
                 } catch (jsonError) {
-                    // If response is not JSON, get text instead
-                    const text = await response.text();
+                    // If response is not JSON, get text from cloned response instead
+                    const text = await responseClone.text();
                     throw new Error(`Server error: ${response.status} ${response.statusText}. ${text}`);
                 }
                 

@@ -55,7 +55,16 @@
                 body: JSON.stringify(data)
             });
             
-            const result = await response.json();
+            // Clone response to avoid "body stream already read" error
+            const responseClone = response.clone();
+            let result;
+            try {
+                result = await response.json();
+            } catch (jsonError) {
+                // If response is not JSON, get text from cloned response instead
+                const text = await responseClone.text();
+                throw new Error(`Server error: ${response.status} ${response.statusText}. ${text}`);
+            }
             
             if (response.ok && result.success) {
                 // Success! Reset form and show success modal
