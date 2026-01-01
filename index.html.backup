@@ -81,201 +81,147 @@
             margin: 0 auto;
         }
 
-        /* ============================================
-           MOBILE-FIRST BASE STYLES (Default: Mobile)
-           ============================================ */
-        
-        /* Base Typography - Mobile First */
-        h1 {
-            font-size: 2rem;
-            line-height: 1.2;
-            margin-bottom: 1rem;
-        }
-        
-        h2 {
-            font-size: 1.5rem;
-            line-height: 1.3;
-            margin-bottom: 0.75rem;
-        }
-        
-        h3 {
-            font-size: 1.25rem;
-            line-height: 1.4;
-        }
-        
-        p {
-            font-size: 1rem;
-            line-height: 1.6;
-            margin-bottom: 1rem;
+        /* Mobile Typography */
+        @media (max-width: 767px) {
+            h1 {
+                font-size: 2.5rem !important;
+                line-height: 1.2 !important;
+            }
+            
+            h2 {
+                font-size: 1.8rem !important;
+                line-height: 1.3 !important;
+            }
+            
+            h3 {
+                font-size: 1.3rem !important;
+            }
+            
+            p, span:not(.text-gold):not(.text-white), div {
+                font-size: 1rem !important;
+            }
+
+            /* Force all CTA buttons full-width on mobile */
+            button.cta-button,
+            button[class*="gradient-gold"],
+            .cta-button {
+                width: 100% !important;
+                max-width: 100% !important;
+                padding: 15px 20px !important;
+            }
         }
 
-        /* Base Container & Spacing - Mobile */
-        .container {
-            padding: 0 20px;
-            max-width: 100%;
-        }
-
-        section {
-            padding: 40px 20px;
-        }
-
-        /* Base Buttons - Mobile (Full Width) */
-        button,
-        .cta-button,
-        button[class*="gradient"],
-        a.cta-button {
-            width: 100%;
-            max-width: 100%;
-            padding: 16px 24px;
-            font-size: 1rem;
-            min-height: 50px;
-        }
-
-        /* Base Form Inputs - Mobile */
-        input,
-        textarea,
-        select {
-            width: 100%;
-            padding: 14px 16px;
-            font-size: 16px;
-            min-height: 50px;
-            margin-bottom: 16px;
-        }
-
-        /* Base Grids - Mobile (Single Column) */
-        .preview-content,
-        .benefits-grid,
-        .bento-grid,
-        .payment-options,
-        .faq-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .bento-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-        }
-
-        /* Base Cards - Mobile */
-        .card,
-        .benefit-card,
-        .mastery-card {
-            width: 100%;
-            margin-bottom: 20px;
-            padding: 20px;
-        }
-
-        /* Base Hero Section - Mobile First */
-        /* Note: Tailwind classes handle responsive layout, CSS only adds base mobile styles */
-        .hero {
-            min-height: 100vh;
-        }
-
-        /* Mobile: Override Tailwind if needed */
+        /* Mobile Hero Section Improvements */
         @media (max-width: 767px) {
             .hero {
-                padding: 80px 20px 40px;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+                padding: 40px 20px;
             }
 
             .hero-content {
                 flex-direction: column !important;
-                gap: 0 !important;
-                width: 100% !important;
-                max-width: 500px !important;
-                margin: 0 auto !important;
+                gap: 30px !important;
             }
 
             .hero-text-container {
-                order: 1 !important;
+                order: 1;
                 width: 100% !important;
                 text-align: center !important;
-                margin-bottom: 30px !important;
-                padding: 0 !important;
             }
 
             .form-container {
-                order: 2 !important;
+                order: 2;
                 width: 100% !important;
                 max-width: 100% !important;
-                margin-top: 0 !important;
+            }
+
+            /* Ensure chapter items have proper padding on mobile */
+            .chapter-item {
+                padding: 1rem !important;
+                min-height: auto !important;
+            }
+            
+            .chapter-item h4,
+            .chapter-item p {
                 padding: 0 !important;
+                margin: 0.25rem 0 !important;
             }
 
-            .form-container > div {
-                padding: 24px 20px !important;
-                margin: 0 !important;
-                width: 100% !important;
+            /* Preview Section Mobile */
+            .preview-content {
+                flex-direction: column !important;
+                gap: 30px !important;
             }
-        }
 
-        /* Base Images - Mobile */
-        img {
-            max-width: 100%;
-            height: auto;
-        }
+            .preview-phone {
+                max-width: 100% !important;
+                margin: 0 auto;
+            }
 
-        /* Base Chapter Items - Mobile */
-        .chapter-item {
-            padding: 16px;
-            min-height: auto;
-            margin-bottom: 12px;
-        }
+            /* Benefits Grid Mobile */
+            .benefits-grid,
+            .bento-grid {
+                grid-template-columns: 1fr !important;
+                gap: 20px !important;
+            }
 
-        .chapter-item h4 {
-            font-size: 1.1rem;
-            margin-bottom: 4px;
-        }
+            /* Investment Section Mobile */
+            .investment-section,
+            .gold-section-bg {
+                margin: 20px !important;
+                padding: 40px 20px !important;
+            }
 
-        .chapter-item p {
-            font-size: 0.9rem;
-            margin: 0;
-        }
+            .payment-options {
+                flex-direction: column;
+                gap: 15px;
+            }
 
-        /* Base Investment & Event Sections - Mobile */
-        .investment-section,
-        .gold-section-bg,
-        .event-section {
-            margin: 20px 0;
-            padding: 40px 20px;
-        }
+            .payment-option {
+                width: 100%;
+            }
 
-        .preview-phone,
-        .phone-preview-section {
-            max-width: 100%;
-            margin: 0 auto;
-        }
+            /* Event Section Mobile */
+            .event-section {
+                padding: 40px 20px !important;
+            }
 
-        .book-3d-container {
-            width: 100%;
-        }
-
-        .mastery-card {
-            height: auto;
-            min-height: 300px;
+            /* FAQ Grid Mobile */
+            .faq-grid {
+                grid-template-columns: 1fr !important;
+                gap: 20px !important;
+            }
         }
 
         .parallax-bg {
-            background-color: #000000;
+            background-image: url('/images/MIKA44.jpg');
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
             z-index: -10;
             pointer-events: none;
         }
 
-        /* Parallax background - Base (Mobile) */
-        .parallax-bg {
-            z-index: -10;
-        }
-        
-        .hero-content {
-            z-index: 10;
-            position: relative;
-        }
-        
-        .hero-text-container {
-            z-index: 20;
-            position: relative;
+        /* Ensure background doesn't cover text on mobile */
+        @media (max-width: 767px) {
+            .parallax-bg {
+                z-index: -10 !important;
+            }
+            
+            .hero-content {
+                z-index: 10 !important;
+                position: relative !important;
+            }
+            
+            .hero-text-container {
+                z-index: 20 !important;
+                position: relative !important;
+            }
         }
 
         .glassmorphism {
@@ -291,15 +237,49 @@
             pointer-events: none;
         }
 
-        /* Dark Overlay - Base (Mobile) */
-        .dark-overlay {
-            background: linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.92) 100%);
-        }
+        /* Stronger overlay on mobile for better text contrast */
+        @media (max-width: 767px) {
+            .dark-overlay {
+                background: linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.92) 100%) !important;
+            }
 
-        /* Date Section - Base (Mobile) */
-        .date-glow h2 {
-            font-size: 2.5rem;
-            line-height: 1.1;
+            /* Registration Form Mobile */
+            .registration-form,
+            .form-container > div {
+                max-width: 100% !important;
+                padding: 20px !important;
+                margin-top: 20px !important;
+            }
+
+            .registration-form input,
+            form input {
+                width: 100% !important;
+                padding: 12px !important;
+                margin-bottom: 15px !important;
+                font-size: 0.9rem !important;
+            }
+
+            /* Section Padding Mobile */
+            section {
+                padding: 60px 20px !important;
+            }
+
+            /* Book Preview Mobile */
+            .book-3d-container {
+                width: 100% !important;
+            }
+
+            /* Mastery Cards Mobile */
+            .mastery-card {
+                height: auto !important;
+                min-height: 300px;
+            }
+
+            /* Date Section Mobile */
+            .date-glow h2 {
+                font-size: 3rem !important;
+                line-height: 1.1 !important;
+            }
         }
 
         /* Hero Content - Bring to front */
@@ -335,27 +315,31 @@
             opacity: 1 !important;
         }
 
-        /* Hero Text Container - Base (Mobile) */
-        .hero-text-container {
-            margin-bottom: 2rem;
-            padding-top: 0;
-            margin-top: 0;
-        }
-        
-        .hero-text-container h1 {
-            margin-top: 0;
-            margin-bottom: 1.5rem;
-            padding-top: 0;
+        /* Ensure proper spacing and visibility on large mobile devices */
+        @media (max-width: 767px) {
+            .hero-text-container {
+                margin-bottom: 2rem;
+                padding-top: 0 !important;
+                margin-top: 0 !important;
+            }
+            
+            .hero-text-container h1 {
+                margin-top: 0 !important;
+                margin-bottom: 1.5rem !important;
+                padding-top: 0 !important;
+            }
+
+            /* Force headline to be first visible element */
+            section.parallax-bg {
+                padding-top: 1.5rem !important;
+            }
         }
 
-        section.parallax-bg {
-            padding-top: 1.5rem;
-        }
-
-        /* Extra Small Mobile (max 430px) */
+        /* iPhone 15 Pro Max specific fixes (430px width) */
         @media (max-width: 430px) {
             .hero-text-container h1 {
-                font-size: 1.75rem;
+                font-size: 2rem !important;
+                line-height: 1.2 !important;
             }
         }
 
@@ -601,170 +585,22 @@
             pointer-events: none;
         }
 
-        /* Mastery Section Styles - Already defined in base mobile styles above */
+        /* Mastery Section Styles */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 1.5rem;
+        }
 
-        /* ============================================
-           TABLET STYLES (768px and up)
-           ============================================ */
         @media (min-width: 768px) {
-            /* Typography - Tablet */
-            h1 {
-                font-size: 3rem;
-            }
-            
-            h2 {
-                font-size: 2rem;
-            }
-            
-            h3 {
-                font-size: 1.5rem;
-            }
-
-            /* Container - Tablet */
-            .container {
-                padding: 0 40px;
-                max-width: 1200px;
-            }
-
-            section {
-                padding: 60px 40px;
-            }
-
-            /* Buttons - Tablet (Auto Width) */
-            button:not(.w-full-always),
-            .cta-button:not(.w-full-always),
-            button[class*="gradient"]:not(.w-full-always) {
-                width: auto;
-                padding: 15px 40px;
-            }
-
-            /* Hero Section - Tablet (Tailwind handles most, CSS adds specifics) */
-            .hero {
-                padding: 80px 40px;
-            }
-
-            .hero-content {
-                gap: 40px;
-                max-width: 100%;
-            }
-
-            .hero-text-container {
-                flex: 1;
-                max-width: 600px;
-            }
-
-            .form-container {
-                width: auto;
-                max-width: 450px;
-            }
-
-            .form-container > div {
-                padding: 30px;
-            }
-
-            /* Grids - Tablet (2 Columns) */
             .bento-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
-
-            .benefits-grid,
-            .faq-grid {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 24px;
-            }
-
-            .preview-content {
-                flex-direction: row;
-                gap: 30px;
-            }
-
-            .payment-options {
-                flex-direction: row;
-                gap: 20px;
-            }
         }
 
-        /* ============================================
-           DESKTOP STYLES (1024px and up)
-           ============================================ */
         @media (min-width: 1024px) {
-            /* Typography - Desktop */
-            h1 {
-                font-size: 4rem;
-            }
-            
-            h2 {
-                font-size: 3rem;
-            }
-            
-            h3 {
-                font-size: 1.75rem;
-            }
-
-            /* Container - Desktop */
-            .container {
-                max-width: 1200px;
-            }
-
-            section {
-                padding: 80px 40px;
-            }
-
-            /* Hero Section - Desktop */
-            .hero {
-                padding: 100px 40px;
-            }
-
-            .hero-content {
-                gap: 60px;
-            }
-
-            /* Grids - Desktop (3 Columns) */
             .bento-grid {
                 grid-template-columns: repeat(3, 1fr);
-            }
-
-            .benefits-grid,
-            .faq-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-
-            /* Event Section - Desktop */
-            .event-section {
-                max-width: 800px;
-                margin: 0 auto;
-            }
-
-            /* Dark Overlay - Desktop (Lighter) */
-            .dark-overlay {
-                background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.8) 100%);
-            }
-
-            /* Date Section - Desktop */
-            .date-glow h2 {
-                font-size: 5rem;
-            }
-        }
-
-        /* ============================================
-           LARGE DESKTOP STYLES (1280px and up)
-           ============================================ */
-        @media (min-width: 1280px) {
-            .container {
-                max-width: 1400px;
-            }
-
-            h1 {
-                font-size: 5rem;
-            }
-
-            h2 {
-                font-size: 3.5rem;
-            }
-
-            .hero-content {
-                gap: 80px;
             }
         }
 
@@ -798,7 +634,6 @@
             filter: blur(40px);
         }
 
-        /* Highlight Item - Base (Mobile) */
         .highlight-item {
             display: flex;
             align-items: flex-start;
@@ -810,7 +645,6 @@
             transition: all 0.3s ease;
         }
 
-        /* Small Tablet and up (640px+) */
         @media (min-width: 640px) {
             .highlight-item {
                 gap: 1rem;
@@ -1102,7 +936,10 @@
             content: '';
             position: absolute;
             inset: 0;
-            background-color: #000000;
+            background-image: url('/images/MIKA15.jpg');
+            background-size: cover;
+            background-position: center;
+            filter: blur(8px);
             opacity: 0.3;
             z-index: -2;
         }
@@ -1930,13 +1767,12 @@
         // ============================================
         // PARALLAX EFFECT
         // ============================================
-        // Parallax effect disabled (removed background images)
-        // window.addEventListener('scroll', function() {
-        //     const scrolled = window.pageYOffset;
-        //     const parallax = document.querySelector('.parallax-bg');
-        //     const rate = scrolled * -0.5;
-        //     parallax.style.transform = 'translate3d(0, ' + rate + 'px, 0)';
-        // });
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelector('.parallax-bg');
+            const rate = scrolled * -0.5;
+            parallax.style.transform = 'translate3d(0, ' + rate + 'px, 0)';
+        });
 
         // ============================================
         // FORM SUBMISSION & SUCCESS MODAL
