@@ -48,6 +48,48 @@
     <!-- Scroll Depth Tracking Script -->
     <script src="/scroll-tracking.js"></script>
     <style>
+        /* Global Mobile Text Scaling */
+        @media (max-width: 767px) {
+            h1 {
+                font-size: 1.875rem !important; /* text-3xl */
+            }
+            
+            h2 {
+                font-size: 1.875rem !important; /* text-3xl */
+            }
+            
+            h3 {
+                font-size: 1.5rem !important; /* text-2xl */
+            }
+            
+            p, span:not(.text-gold):not(.text-white), div {
+                font-size: 1rem !important; /* text-base */
+            }
+
+            /* Force all CTA buttons full-width on mobile */
+            button.cta-button,
+            button[class*="gradient-gold"],
+            button:contains("Enskri"),
+            button:contains("Rezève") {
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+        }
+
+        /* Ensure chapter items have proper padding on mobile */
+        @media (max-width: 767px) {
+            .chapter-item {
+                padding: 1rem !important;
+                min-height: auto !important;
+            }
+            
+            .chapter-item h4,
+            .chapter-item p {
+                padding: 0 !important;
+                margin: 0.25rem 0 !important;
+            }
+        }
+
         .parallax-bg {
             background-image: url('/images/MIKA44.jpg');
             background-size: cover;
@@ -55,6 +97,23 @@
             background-attachment: fixed;
             z-index: -10;
             pointer-events: none;
+        }
+
+        /* Ensure background doesn't cover text on mobile */
+        @media (max-width: 767px) {
+            .parallax-bg {
+                z-index: -10 !important;
+            }
+            
+            .hero-content {
+                z-index: 10 !important;
+                position: relative !important;
+            }
+            
+            .hero-text-container {
+                z-index: 20 !important;
+                position: relative !important;
+            }
         }
 
         .glassmorphism {
@@ -765,42 +824,33 @@
 
 
     <!-- Hero Section with Parallax -->
-    <section class="relative min-h-screen flex flex-col md:flex-row items-start md:items-center justify-center parallax-bg pt-20 md:pt-0 pb-8 md:pb-0">
+    <section class="relative min-h-screen flex flex-col md:flex-row items-start md:items-center justify-center parallax-bg pt-28 md:pt-0 pb-8 md:pb-0">
         <!-- Dark Overlay - Stronger on mobile for better text contrast -->
         <div class="absolute inset-0 dark-overlay" style="background: linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.9) 100%); z-index: 0;"></div>
-
-        <!-- Main Headline - FIRST ELEMENT on mobile, BEFORE everything else -->
-        <div class="relative z-30 w-full px-6 pt-6 pb-4 md:hidden" style="display: block !important; visibility: visible !important; opacity: 1 !important; order: -1;">
-            <h1 class="text-3xl font-serif font-bold text-center text-shadow leading-tight" style="display: block !important; visibility: visible !important; opacity: 1 !important; margin: 0 !important; padding: 0 !important; color: white !important;">
-                <span class="text-white block mb-1" style="display: block !important; visibility: visible !important; opacity: 1 !important; color: white !important;">Sispann reve,</span>
-                <span class="text-gold block mb-1" style="display: block !important; visibility: visible !important; opacity: 1 !important; color: #D4AF37 !important;">kòmanse aji</span>
-                <span class="text-white text-2xl block" style="display: block !important; visibility: visible !important; opacity: 1 !important; color: white !important;">Vin yon fotograf pwofesyonèl.</span>
-            </h1>
-        </div>
 
         <!-- Content Container -->
         <div class="relative z-10 max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 hero-content w-full">
             <div class="flex flex-col md:flex-row gap-6 md:gap-12 items-center w-full py-4 md:py-0">
-                <!-- Text Container - FIRST on mobile, visible by default -->
-                <div class="hero-text-container text-center md:text-left w-full md:w-auto flex-shrink-0 order-1 hidden md:block" style="min-height: auto;">
-                    <!-- Main Headline - Desktop version -->
-                    <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-serif font-bold mb-4 md:mb-6 text-shadow leading-tight">
+                <!-- Text Container - FIRST on mobile, ALWAYS VISIBLE -->
+                <div class="hero-text-container text-center md:text-left w-full md:w-auto flex-shrink-0 order-1 block" style="min-height: auto; display: block !important;">
+                    <!-- Main Headline - VISIBLE ON ALL SCREENS -->
+                    <h1 class="text-3xl md:text-5xl lg:text-7xl font-serif font-bold mb-4 md:mb-6 text-shadow leading-tight" style="display: block !important; visibility: visible !important; opacity: 1 !important;">
                         <span class="text-white block">Sispann reve,</span>
                         <span class="text-gold block">kòmanse aji</span>
-                        <span class="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl block mt-2">Vin yon fotograf pwofesyonèl.</span>
+                        <span class="text-white text-2xl md:text-4xl lg:text-5xl block mt-2">Vin yon fotograf pwofesyonèl.</span>
                     </h1>
 
                     <!-- Price Offer - Maximum Impact -->
                     <div class="mb-8">
-                        <p class="text-base sm:text-lg md:text-xl text-gray-300 mb-4">Valè klas sa a se</p>
+                        <p class="text-base md:text-xl text-gray-300 mb-4">Valè klas sa a se</p>
                         <div class="flex flex-wrap justify-center md:justify-start items-center gap-4 mb-4">
-                            <span class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-bold text-gold-gradient line-through opacity-70">$497</span>
+                            <span class="text-4xl md:text-6xl lg:text-7xl font-serif font-bold text-gold-gradient line-through opacity-70">$497</span>
                         </div>
-                        <p class="text-base sm:text-lg md:text-xl text-gray-300 font-light">Enskripsyon gratis jodi a. Aprann teknik avanse nan Boston ak modèl pwofesyonèl.</p>
+                        <p class="text-base md:text-xl text-gray-300 font-light">Enskripsyon gratis jodi a. Aprann teknik avanse nan Boston ak modèl pwofesyonèl.</p>
                     </div>
 
-                    <!-- CTA Button -->
-                    <button class="w-full sm:w-auto gradient-gold text-dark-bg font-bold px-8 py-4 rounded-lg hover:opacity-90 transition-opacity duration-300 text-base sm:text-lg shadow-lg hover-lift cta-button">
+                    <!-- CTA Button - FULL WIDTH ON MOBILE -->
+                    <button class="w-full md:w-auto gradient-gold text-dark-bg font-bold px-8 py-4 rounded-lg hover:opacity-90 transition-opacity duration-300 text-base md:text-lg shadow-lg hover-lift cta-button">
                         Enskri Gratis Kounye a
                     </button>
 
@@ -923,19 +973,19 @@
             <!-- Split View Container -->
             <div class="flex flex-col lg:grid lg:grid-cols-[320px_1fr] gap-8 items-start">
                 
-                <!-- Left: Index / Chapter List -->
+                <!-- Left: Index / Chapter List - FULL WIDTH ON MOBILE -->
                 <div class="relative w-full lg:w-auto order-1 lg:order-none">
-                    <div class="glassmorphism rounded-2xl p-6 lg:sticky lg:top-8 max-h-[60vh] lg:max-h-none overflow-y-auto lg:overflow-y-visible">
+                    <div class="glassmorphism rounded-2xl p-4 sm:p-6 lg:sticky lg:top-8 max-h-[60vh] lg:max-h-none overflow-y-auto lg:overflow-y-visible w-full">
                         <!-- Index Header -->
                         <div class="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
-                            <div class="w-10 h-10 rounded-full gradient-gold flex items-center justify-center">
+                            <div class="w-10 h-10 rounded-full gradient-gold flex items-center justify-center flex-shrink-0">
                                 <svg class="w-5 h-5 text-dark-bg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                                 </svg>
                             </div>
-                            <div>
-                                <h3 class="text-white font-bold text-lg">Tablo Konteni</h3>
-                                <p class="text-gray-500 text-sm">5 Chapit Esansyèl</p>
+                            <div class="min-w-0 flex-1">
+                                <h3 class="text-white font-bold text-base sm:text-lg">Tablo Konteni</h3>
+                                <p class="text-gray-500 text-xs sm:text-sm">5 Chapit Esansyèl</p>
                             </div>
                         </div>
 
@@ -990,7 +1040,7 @@
             <!-- CTA Below -->
             <div class="text-center mt-12 sm:mt-16">
                 <p class="text-gray-400 mb-4 text-sm sm:text-base">Ou vle aprann tout sa?</p>
-                <button class="w-full sm:w-auto gradient-gold text-dark-bg font-semibold px-8 py-4 rounded-lg hover:opacity-90 transition-all duration-300 shadow-lg hover-lift transform hover:scale-105 text-base sm:text-lg">
+                <button class="w-full md:w-auto gradient-gold text-dark-bg font-semibold px-8 py-4 rounded-lg hover:opacity-90 transition-all duration-300 shadow-lg hover-lift transform hover:scale-105 text-base md:text-lg">
                     Enskri Gratis Kounye a
                 </button>
             </div>
@@ -999,19 +1049,19 @@
 
     <!-- Pricing & Payment Section - Golden Ticket -->
     <section class="py-16 sm:py-24 relative overflow-hidden">
-        <div class="max-w-5xl mx-auto px-6 sm:px-6 lg:px-8 relative z-10">
-            <div class="gold-section-bg rounded-3xl p-6 sm:p-8 md:p-12 lg:p-16 text-center shadow-2xl">
-                <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-dark-bg mb-6">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="gold-section-bg rounded-3xl p-6 sm:p-8 md:p-12 lg:p-16 text-center shadow-2xl w-full mx-4 sm:mx-0">
+                <h2 class="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-dark-bg mb-6">
                     Envesti nan lavni w <span class="text-white/90">san presyon</span>
                 </h2>
                 
                 <!-- Massive Crossed Out Price -->
                 <div class="mb-8">
-                    <p class="text-base sm:text-lg text-dark-bg/80 mb-2">Valè konplè:</p>
-                    <span class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-serif font-bold text-dark-bg/60 line-through">$497</span>
+                    <p class="text-base md:text-lg text-dark-bg/80 mb-2">Valè konplè:</p>
+                    <span class="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-serif font-bold text-dark-bg/60 line-through block">$497</span>
                 </div>
                 
-                <p class="text-base sm:text-lg md:text-xl text-dark-bg/90 leading-relaxed max-w-3xl mx-auto mb-8">
+                <p class="text-base md:text-xl text-dark-bg/90 leading-relaxed max-w-3xl mx-auto mb-8">
                     Nou rann li fasil pou ou. Ou ka peye an <span class="text-dark-bg font-bold">4 fwa san enterè</span>. Pa gen okenn depo obligatwa pou w rezève plas ou jodi a.
                 </p>
                 
@@ -1030,7 +1080,7 @@
                     </div>
                 </div>
                 
-                <button class="mt-8 sm:mt-10 w-full sm:w-auto bg-dark-bg text-gold font-bold px-8 sm:px-12 py-4 sm:py-5 rounded-xl hover:bg-dark-bg/90 transition-all duration-300 shadow-lg hover-lift transform hover:scale-105 text-lg sm:text-xl border-2 border-dark-bg">
+                <button class="mt-8 sm:mt-10 w-full md:w-auto bg-dark-bg text-gold font-bold px-8 sm:px-12 py-4 sm:py-5 rounded-xl hover:bg-dark-bg/90 transition-all duration-300 shadow-lg hover-lift transform hover:scale-105 text-lg sm:text-xl border-2 border-dark-bg">
                     Rezève Plas ou Gratis
                 </button>
             </div>
@@ -1340,20 +1390,21 @@
         function renderChapterNav() {
             chapterNav.innerHTML = bookPages.map((page, index) => `
                 <button 
-                    class="chapter-item w-full text-left p-4 rounded-xl border border-transparent ${index === currentPageIndex ? 'active' : ''}"
+                    class="chapter-item w-full text-left p-3 sm:p-4 rounded-xl border border-transparent ${index === currentPageIndex ? 'active' : ''}"
                     data-index="${index}"
+                    style="word-wrap: break-word; overflow-wrap: break-word;"
                 >
-                    <div class="flex items-start gap-3">
-                        <span class="text-2xl font-serif font-bold ${index === currentPageIndex ? 'text-gold' : 'text-gray-600'} transition-colors">
+                    <div class="flex items-start gap-2 sm:gap-3">
+                        <span class="text-xl sm:text-2xl font-serif font-bold ${index === currentPageIndex ? 'text-gold' : 'text-gray-600'} transition-colors flex-shrink-0">
                             ${String(page.id).padStart(2, '0')}
                         </span>
                         <div class="flex-1 min-w-0">
-                            <h4 class="font-semibold ${index === currentPageIndex ? 'text-gold' : 'text-white'} truncate transition-colors">
+                            <h4 class="font-semibold text-sm sm:text-base ${index === currentPageIndex ? 'text-gold' : 'text-white'} transition-colors" style="word-wrap: break-word; overflow-wrap: break-word;">
                                 ${page.title}
                             </h4>
-                            <p class="text-gray-500 text-sm truncate">${page.subtitle}</p>
+                            <p class="text-gray-500 text-xs sm:text-sm mt-1" style="word-wrap: break-word; overflow-wrap: break-word;">${page.subtitle}</p>
                         </div>
-                        ${index === currentPageIndex ? '<div class="w-2 h-2 rounded-full bg-gold mt-2"></div>' : ''}
+                        ${index === currentPageIndex ? '<div class="w-2 h-2 rounded-full bg-gold mt-2 flex-shrink-0"></div>' : ''}
                     </div>
                 </button>
             `).join('');
