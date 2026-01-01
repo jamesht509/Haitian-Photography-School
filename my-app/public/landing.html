@@ -48,13 +48,234 @@
     <!-- Scroll Depth Tracking Script -->
     <script src="/scroll-tracking.js"></script>
     <style>
+        /* ============================================
+           MOBILE-FIRST RESPONSIVE DESIGN
+           ============================================ */
+        
+        /* Base Mobile Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --yellow: #D4AF37;
+            --dark-bg: #050505;
+            --card-bg: #252525;
+            --text-light: #ffffff;
+            --text-gray: #cccccc;
+        }
+
+        body {
+            font-family: 'Inter', 'Georgia', serif;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 100%;
+            padding: 0 20px;
+            margin: 0 auto;
+        }
+
+        /* ============================================
+           MOBILE-FIRST BASE STYLES (Default: Mobile)
+           ============================================ */
+        
+        /* Base Typography - Mobile First */
+        h1 {
+            font-size: 2rem;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+            line-height: 1.3;
+            margin-bottom: 0.75rem;
+        }
+        
+        h3 {
+            font-size: 1.25rem;
+            line-height: 1.4;
+        }
+        
+        p {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        /* Base Container & Spacing - Mobile */
+        .container {
+            padding: 0 20px;
+            max-width: 100%;
+        }
+
+        section {
+            padding: 40px 20px;
+        }
+
+        /* Base Buttons - Mobile (Full Width) */
+        button,
+        .cta-button,
+        button[class*="gradient"],
+        a.cta-button {
+            width: 100%;
+            max-width: 100%;
+            padding: 16px 24px;
+            font-size: 1rem;
+            min-height: 50px;
+        }
+
+        /* Base Form Inputs - Mobile */
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 16px;
+            min-height: 50px;
+            margin-bottom: 16px;
+        }
+
+        /* Base Grids - Mobile (Single Column) */
+        .preview-content,
+        .benefits-grid,
+        .bento-grid,
+        .payment-options,
+        .faq-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .bento-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        /* Base Cards - Mobile */
+        .card,
+        .benefit-card,
+        .mastery-card {
+            width: 100%;
+            margin-bottom: 20px;
+            padding: 20px;
+        }
+
+        /* Base Hero Section - Mobile First */
+        /* Note: Tailwind classes handle responsive layout, CSS only adds base mobile styles */
+        .hero {
+            min-height: 100vh;
+        }
+
+        /* Mobile: Override Tailwind if needed */
+        @media (max-width: 767px) {
+            .hero {
+                padding: 80px 20px 40px;
+            }
+
+            .hero-content {
+                flex-direction: column !important;
+                gap: 0 !important;
+                width: 100% !important;
+                max-width: 500px !important;
+                margin: 0 auto !important;
+            }
+
+            .hero-text-container {
+                order: 1 !important;
+                width: 100% !important;
+                text-align: center !important;
+                margin-bottom: 30px !important;
+                padding: 0 !important;
+            }
+
+            .form-container {
+                order: 2 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                margin-top: 0 !important;
+                padding: 0 !important;
+            }
+
+            .form-container > div {
+                padding: 24px 20px !important;
+                margin: 0 !important;
+                width: 100% !important;
+            }
+        }
+
+        /* Base Images - Mobile */
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Base Chapter Items - Mobile */
+        .chapter-item {
+            padding: 16px;
+            min-height: auto;
+            margin-bottom: 12px;
+        }
+
+        .chapter-item h4 {
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+
+        .chapter-item p {
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        /* Base Investment & Event Sections - Mobile */
+        .investment-section,
+        .gold-section-bg,
+        .event-section {
+            margin: 20px 0;
+            padding: 40px 20px;
+        }
+
+        .preview-phone,
+        .phone-preview-section {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .book-3d-container {
+            width: 100%;
+        }
+
+        .mastery-card {
+            height: auto;
+            min-height: 300px;
+        }
+
         .parallax-bg {
-            background-image: url('/images/MIKA44.jpg');
-            background-size: cover;
-            background-position: center top;
-            background-attachment: fixed;
+            background-color: #000000;
             z-index: -10;
             pointer-events: none;
+        }
+
+        /* Parallax background - Base (Mobile) */
+        .parallax-bg {
+            z-index: -10;
+        }
+        
+        .hero-content {
+            z-index: 10;
+            position: relative;
+        }
+        
+        .hero-text-container {
+            z-index: 20;
+            position: relative;
         }
 
         .glassmorphism {
@@ -66,15 +287,98 @@
 
         /* Dark Overlay - Send to back */
         .dark-overlay {
-            z-index: -10;
+            z-index: 0;
             pointer-events: none;
+        }
+
+        /* Dark Overlay - Base (Mobile) */
+        .dark-overlay {
+            background: linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.92) 100%);
+        }
+
+        /* Date Section - Base (Mobile) */
+        .date-glow h2 {
+            font-size: 2.5rem;
+            line-height: 1.1;
         }
 
         /* Hero Content - Bring to front */
         .hero-content {
             position: relative;
-            z-index: 50;
+            z-index: 10;
             pointer-events: auto;
+            display: flex;
+            width: 100%;
+        }
+
+        /* Ensure text container is visible on mobile */
+        .hero-text-container {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            width: 100%;
+            position: relative;
+            z-index: 20;
+        }
+
+        /* Force headline visibility on all mobile devices including iPhone 15 Pro Max */
+        .hero-text-container h1 {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            color: inherit !important;
+        }
+
+        .hero-text-container h1 span {
+            display: inline !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+
+        /* Hero Text Container - Base (Mobile) */
+        .hero-text-container {
+            margin-bottom: 2rem;
+            padding-top: 0;
+            margin-top: 0;
+        }
+        
+        .hero-text-container h1 {
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            padding-top: 0;
+        }
+
+        section.parallax-bg {
+            padding-top: 1.5rem;
+        }
+
+        /* Extra Small Mobile (max 430px) */
+        @media (max-width: 430px) {
+            .hero-text-container h1 {
+                font-size: 1.75rem;
+            }
+        }
+
+        /* Safari iOS specific fixes */
+        @supports (-webkit-touch-callout: none) {
+            section.parallax-bg {
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .hero-text-container h1,
+            h1 {
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+        }
+
+        /* Force headline visibility on all iOS devices */
+        @media screen and (max-width: 767px) {
+            section.parallax-bg > div:first-of-type {
+                display: block !important;
+                position: relative !important;
+                z-index: 20 !important;
+            }
         }
 
         /* Form Container - Ensure interactivity */
@@ -84,9 +388,11 @@
             pointer-events: auto;
         }
 
-        /* Form inputs and buttons - Ensure pointer events */
+        /* Form inputs and buttons - Ensure pointer events and z-index */
         form input, form button, form textarea, form select {
             pointer-events: auto !important;
+            z-index: 50 !important;
+            position: relative;
         }
 
         /* Specific form elements - Force pointer events */
@@ -295,16 +601,170 @@
             pointer-events: none;
         }
 
-        /* Mastery Section Styles */
-        .bento-grid {
-            display: grid;
-            grid-template-columns: repeat(1, 1fr);
-            gap: 1.5rem;
+        /* Mastery Section Styles - Already defined in base mobile styles above */
+
+        /* ============================================
+           TABLET STYLES (768px and up)
+           ============================================ */
+        @media (min-width: 768px) {
+            /* Typography - Tablet */
+            h1 {
+                font-size: 3rem;
+            }
+            
+            h2 {
+                font-size: 2rem;
+            }
+            
+            h3 {
+                font-size: 1.5rem;
+            }
+
+            /* Container - Tablet */
+            .container {
+                padding: 0 40px;
+                max-width: 1200px;
+            }
+
+            section {
+                padding: 60px 40px;
+            }
+
+            /* Buttons - Tablet (Auto Width) */
+            button:not(.w-full-always),
+            .cta-button:not(.w-full-always),
+            button[class*="gradient"]:not(.w-full-always) {
+                width: auto;
+                padding: 15px 40px;
+            }
+
+            /* Hero Section - Tablet (Tailwind handles most, CSS adds specifics) */
+            .hero {
+                padding: 80px 40px;
+            }
+
+            .hero-content {
+                gap: 40px;
+                max-width: 100%;
+            }
+
+            .hero-text-container {
+                flex: 1;
+                max-width: 600px;
+            }
+
+            .form-container {
+                width: auto;
+                max-width: 450px;
+            }
+
+            .form-container > div {
+                padding: 30px;
+            }
+
+            /* Grids - Tablet (2 Columns) */
+            .bento-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .benefits-grid,
+            .faq-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 24px;
+            }
+
+            .preview-content {
+                flex-direction: row;
+                gap: 30px;
+            }
+
+            .payment-options {
+                flex-direction: row;
+                gap: 20px;
+            }
         }
 
-        @media (min-width: 768px) {
+        /* ============================================
+           DESKTOP STYLES (1024px and up)
+           ============================================ */
+        @media (min-width: 1024px) {
+            /* Typography - Desktop */
+            h1 {
+                font-size: 4rem;
+            }
+            
+            h2 {
+                font-size: 3rem;
+            }
+            
+            h3 {
+                font-size: 1.75rem;
+            }
+
+            /* Container - Desktop */
+            .container {
+                max-width: 1200px;
+            }
+
+            section {
+                padding: 80px 40px;
+            }
+
+            /* Hero Section - Desktop */
+            .hero {
+                padding: 100px 40px;
+            }
+
+            .hero-content {
+                gap: 60px;
+            }
+
+            /* Grids - Desktop (3 Columns) */
             .bento-grid {
                 grid-template-columns: repeat(3, 1fr);
+            }
+
+            .benefits-grid,
+            .faq-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            /* Event Section - Desktop */
+            .event-section {
+                max-width: 800px;
+                margin: 0 auto;
+            }
+
+            /* Dark Overlay - Desktop (Lighter) */
+            .dark-overlay {
+                background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.8) 100%);
+            }
+
+            /* Date Section - Desktop */
+            .date-glow h2 {
+                font-size: 5rem;
+            }
+        }
+
+        /* ============================================
+           LARGE DESKTOP STYLES (1280px and up)
+           ============================================ */
+        @media (min-width: 1280px) {
+            .container {
+                max-width: 1400px;
+            }
+
+            h1 {
+                font-size: 5rem;
+            }
+
+            h2 {
+                font-size: 3.5rem;
+            }
+
+            .hero-content {
+                gap: 80px;
             }
         }
 
@@ -338,15 +798,24 @@
             filter: blur(40px);
         }
 
+        /* Highlight Item - Base (Mobile) */
         .highlight-item {
             display: flex;
             align-items: flex-start;
-            gap: 1rem;
-            padding: 1.5rem;
+            gap: 0.75rem;
+            padding: 1rem;
             background: rgba(255, 255, 255, 0.03);
             border-radius: 1rem;
             border: 1px solid rgba(255, 255, 255, 0.05);
             transition: all 0.3s ease;
+        }
+
+        /* Small Tablet and up (640px+) */
+        @media (min-width: 640px) {
+            .highlight-item {
+                gap: 1rem;
+                padding: 1.5rem;
+            }
         }
 
         .highlight-item:hover {
@@ -439,6 +908,66 @@
             animation: fadeInUp 0.8s ease-out forwards;
         }
 
+        /* ============================================
+           MOBILE TOUCH IMPROVEMENTS & RESPONSIVENESS
+           ============================================ */
+        @media (max-width: 767px) {
+            /* Smooth transitions for all interactive elements */
+            button, a, input, .hover-lift {
+                transition: all 0.3s ease;
+            }
+
+            /* Mobile touch improvements */
+            button, a, .cta-button {
+                min-height: 44px; /* Minimum touch target size */
+                -webkit-tap-highlight-color: rgba(212, 175, 55, 0.3);
+            }
+
+            input, textarea, select {
+                min-height: 44px;
+                font-size: 16px !important; /* Prevents zoom on iOS */
+            }
+
+            /* Better spacing on mobile */
+            .container {
+                padding: 0 20px;
+            }
+
+            /* Form improvements */
+            form {
+                width: 100%;
+            }
+
+            form input,
+            form textarea,
+            form select {
+                width: 100%;
+                padding: 12px;
+                margin-bottom: 15px;
+            }
+
+            /* Card improvements */
+            .glassmorphism,
+            .glassmorphism-premium {
+                padding: 20px !important;
+            }
+
+            /* Section spacing */
+            section {
+                padding: 60px 20px !important;
+            }
+
+            /* Grid improvements */
+            .grid {
+                gap: 20px !important;
+            }
+
+            /* Text alignment on mobile */
+            .text-center-mobile {
+                text-align: center;
+            }
+        }
+
         /* Luxury Header Styles */
         .luxury-header {
             position: absolute;
@@ -446,8 +975,14 @@
             left: 0;
             right: 0;
             z-index: 1000;
-            padding: 1.5rem 0;
+            padding: 1rem 0;
             background: linear-gradient(to bottom, rgba(5, 5, 5, 0.8), transparent);
+        }
+
+        @media (min-width: 640px) {
+            .luxury-header {
+                padding: 1.5rem 0;
+            }
         }
 
         .logo-container {
@@ -457,16 +992,22 @@
         .logo-text {
             font-family: 'Playfair Display', serif;
             font-weight: 700;
-            font-size: 2rem;
+            font-size: 1.5rem;
             letter-spacing: 0.1em;
             color: #D4AF37;
             text-transform: uppercase;
         }
 
+        @media (min-width: 640px) {
+            .logo-text {
+                font-size: 2rem;
+            }
+        }
+
         .logo-monogram {
             font-family: 'Playfair Display', serif;
             font-weight: 700;
-            font-size: 3.5rem;
+            font-size: 2.5rem;
             background: linear-gradient(135deg, #D4AF37 0%, #E6B800 50%, #B8860B 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -474,13 +1015,25 @@
             letter-spacing: 0.2em;
         }
 
+        @media (min-width: 640px) {
+            .logo-monogram {
+                font-size: 3.5rem;
+            }
+        }
+
         .logo-subtitle {
             font-family: 'Inter', sans-serif;
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             letter-spacing: 0.3em;
             color: rgba(255, 255, 255, 0.7);
             text-transform: uppercase;
             margin-top: 0.25rem;
+        }
+
+        @media (min-width: 640px) {
+            .logo-subtitle {
+                font-size: 0.75rem;
+            }
         }
 
         /* Enhanced Glassmorphism */
@@ -549,10 +1102,7 @@
             content: '';
             position: absolute;
             inset: 0;
-            background-image: url('/images/MIKA15.jpg');
-            background-size: cover;
-            background-position: center;
-            filter: blur(8px);
+            background-color: #000000;
             opacity: 0.3;
             z-index: -2;
         }
@@ -578,43 +1128,43 @@
 </head>
 <body class="bg-dark-bg text-white font-sans overflow-x-hidden">
     <!-- Success Modal -->
-    <div id="successModal" class="success-modal flex items-center justify-center p-4">
+    <div id="successModal" class="success-modal flex items-center justify-center p-4 sm:p-6">
         <div class="max-w-4xl w-full">
             <!-- Progress Bar Section -->
-            <div class="mb-12 fade-in-up" style="animation-delay: 0.2s;">
-                <p class="text-center text-gold font-semibold mb-4 text-lg">
+            <div class="mb-8 sm:mb-12 fade-in-up" style="animation-delay: 0.2s;">
+                <p class="text-center text-gold font-semibold mb-4 text-base sm:text-lg">
                     Enskripsyon ou prèske fini!
                 </p>
                 <div class="progress-container mx-auto">
                     <div class="progress-fill"></div>
                 </div>
-                <p class="text-center text-gray-400 mt-3 text-sm">
+                <p class="text-center text-gray-400 mt-3 text-xs sm:text-sm">
                     90% konplè
                 </p>
             </div>
 
             <!-- Main Content -->
-            <div class="glassmorphism rounded-3xl p-8 md:p-12 text-center fade-in-up" style="animation-delay: 0.4s;">
+            <div class="glassmorphism rounded-3xl p-6 sm:p-8 md:p-12 text-center fade-in-up" style="animation-delay: 0.4s;">
                 <!-- Icon -->
-                <div class="w-20 h-20 rounded-full bg-gold/20 flex items-center justify-center mx-auto mb-6">
-                    <svg class="w-10 h-10 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gold/20 flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                    <svg class="w-8 h-8 sm:w-10 sm:h-10 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                 </div>
 
                 <!-- Headline -->
-                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-white mb-6">
+                <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-white mb-4 sm:mb-6">
                     Sèlman yon dènye etap ki manke...
                 </h2>
 
                 <!-- Instruction -->
-                <p class="text-lg sm:text-xl text-gray-300 leading-relaxed max-w-2xl mx-auto mb-6">
+                <p class="text-base sm:text-lg md:text-xl text-gray-300 leading-relaxed max-w-2xl mx-auto mb-4 sm:mb-6">
                     Pou enskripsyon ou an konfime <span class="text-gold font-bold">100%</span>, ou dwe antre nan gwoup WhatsApp elèv yo kounye a. Se la n ap voye kote klas la ap fèt la ak tout liv gratis yo.
                 </p>
 
                 <!-- Progress Note -->
-                <div class="bg-gold/10 border border-gold/30 rounded-xl p-4 max-w-xl mx-auto mb-8">
-                    <p class="text-gold font-semibold">
+                <div class="bg-gold/10 border border-gold/30 rounded-xl p-3 sm:p-4 max-w-xl mx-auto mb-6 sm:mb-8">
+                    <p class="text-gold font-semibold text-sm sm:text-base">
                         📊 Kounye a ou nan 90%. Antre nan gwoup la pou w rive nan 100%.
                     </p>
                 </div>
@@ -624,17 +1174,17 @@
                     href="https://tyn.bio/Class8Janvye"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="whatsapp-btn inline-flex items-center gap-3 text-white font-bold px-10 py-6 rounded-2xl text-xl"
+                    class="whatsapp-btn inline-flex items-center justify-center gap-2 sm:gap-3 text-white font-bold px-6 sm:px-10 py-4 sm:py-6 rounded-2xl text-base sm:text-lg md:text-xl w-full sm:w-auto"
                 >
                     <!-- WhatsApp Icon -->
-                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-6 h-6 sm:w-8 sm:h-8" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
                     </svg>
-                    <span>Antre nan Gwoup WhatsApp la Kounye a</span>
+                    <span class="text-center">Antre nan Gwoup WhatsApp la Kounye a</span>
                 </a>
 
                 <!-- Additional Info -->
-                <p class="text-gray-500 text-sm mt-6">
+                <p class="text-gray-500 text-xs sm:text-sm mt-4 sm:mt-6">
                     Klike sou bouton an pou w resevwa tout enfòmasyon yo
                 </p>
             </div>
@@ -643,46 +1193,46 @@
 
 
     <!-- Hero Section with Parallax -->
-    <section class="relative h-screen flex items-center justify-center parallax-bg">
-        <!-- Dark Overlay -->
-        <div class="absolute inset-0 dark-overlay" style="background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.85) 100%);"></div>
+    <section class="hero relative min-h-screen flex flex-col md:flex-row items-start md:items-center justify-center parallax-bg pt-28 md:pt-0 pb-8 md:pb-0">
+        <!-- Dark Overlay - Stronger on mobile for better text contrast -->
+        <div class="absolute inset-0 dark-overlay" style="background: linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.9) 100%); z-index: 0;"></div>
 
         <!-- Content Container -->
-        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center hero-content">
-            <div class="grid lg:grid-cols-2 gap-12 items-center">
-                <!-- Left Content -->
-                <div class="text-left lg:text-left">
-                    <!-- Main Headline -->
-                    <h1 class="text-4xl sm:text-5xl lg:text-7xl font-serif font-bold mb-6 text-shadow leading-tight">
-                        <span class="text-white">Sispann reve,</span><br>
-                        <span class="text-gold">kòmanse aji</span><br>
-                        <span class="text-white text-3xl sm:text-4xl lg:text-5xl">Vin yon fotograf pwofesyonèl.</span>
+        <div class="relative z-10 max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 hero-content w-full">
+            <div class="flex flex-col md:flex-row gap-6 md:gap-12 items-center w-full py-4 md:py-0">
+                <!-- Text Container - FIRST on mobile, ALWAYS VISIBLE -->
+                <div class="hero-text-container text-center md:text-left w-full md:w-auto flex-shrink-0 order-1 block" style="min-height: auto; display: block !important;">
+                    <!-- Main Headline - VISIBLE ON ALL SCREENS -->
+                    <h1 class="text-3xl md:text-5xl lg:text-7xl font-serif font-bold mb-4 md:mb-6 text-shadow leading-tight" style="display: block !important; visibility: visible !important; opacity: 1 !important;">
+                        <span class="text-white block">Sispann reve,</span>
+                        <span class="text-gold block">kòmanse aji</span>
+                        <span class="text-white text-2xl md:text-4xl lg:text-5xl block mt-2">Vin yon fotograf pwofesyonèl.</span>
                     </h1>
 
                     <!-- Price Offer - Maximum Impact -->
                     <div class="mb-8">
-                        <p class="text-lg sm:text-xl text-gray-300 mb-4">Valè klas sa a se</p>
-                        <div class="flex flex-wrap items-center gap-4 mb-4">
-                            <span class="text-5xl sm:text-6xl lg:text-7xl font-serif font-bold text-gold-gradient line-through opacity-70">$497</span>
+                        <p class="text-base md:text-xl text-gray-300 mb-4">Valè klas sa a se</p>
+                        <div class="flex flex-wrap justify-center md:justify-start items-center gap-4 mb-4">
+                            <span class="text-4xl md:text-6xl lg:text-7xl font-serif font-bold text-gold-gradient line-through opacity-70">$497</span>
                         </div>
-                        <p class="text-lg sm:text-xl text-gray-300 font-light">Enskripsyon gratis jodi a. Aprann teknik avanse nan Boston ak modèl pwofesyonèl.</p>
+                        <p class="text-base md:text-xl text-gray-300 font-light">Enskripsyon gratis jodi a. Aprann teknik avanse nan Boston ak modèl pwofesyonèl.</p>
                     </div>
 
-                    <!-- CTA Button -->
-                    <button class="gradient-gold text-dark-bg font-bold px-8 py-4 rounded-lg hover:opacity-90 transition-opacity duration-300 text-lg shadow-lg hover-lift cta-button">
+                    <!-- CTA Button - FULL WIDTH ON MOBILE -->
+                    <button class="w-full md:w-auto gradient-gold text-dark-bg font-bold px-8 py-4 rounded-lg hover:opacity-90 transition-opacity duration-300 text-base md:text-lg shadow-lg hover-lift cta-button">
                         Enskri Gratis Kounye a
                     </button>
 
                     <!-- Trust Note -->
-                    <p class="text-sm text-gray-400 mt-4 max-w-2xl">
+                    <p class="text-sm text-gray-400 mt-4 max-w-2xl mx-auto md:mx-0">
                         Pa bezwen depo kounye a. Rezève plas ou sèlman.
                     </p>
                 </div>
 
-                <!-- Registration Form -->
-                <div class="lg:pl-8 form-container">
-                    <div class="glassmorphism-premium rounded-3xl p-8 md:p-10 max-w-md mx-auto hover-lift">
-                        <h2 class="text-2xl md:text-3xl font-serif font-bold mb-6 text-center text-gold">
+                <!-- Registration Form - SECOND on mobile -->
+                <div class="w-full md:w-auto md:pl-8 form-container flex-shrink-0 order-2 md:order-none">
+                    <div class="glassmorphism-premium rounded-3xl p-6 sm:p-8 md:p-10 max-w-md mx-auto hover-lift w-full">
+                        <h2 class="text-xl sm:text-2xl md:text-3xl font-serif font-bold mb-6 text-center text-gold">
                             Rezève Klas ou
                         </h2>
 
@@ -695,7 +1245,7 @@
                                 <input
                                     type="text"
                                     name="name"
-                                    class="w-full px-4 py-3 bg-white bg-opacity-10 border border-gray-600 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent text-white placeholder-gray-400 transition-all duration-300"
+                                    class="w-full px-4 py-4 sm:py-3 bg-white bg-opacity-10 border border-gray-600 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent text-white placeholder-gray-400 transition-all duration-300 text-base"
                                     placeholder="Antre non ou konplè"
                                     required
                                 >
@@ -709,7 +1259,7 @@
                                 <input
                                     type="tel"
                                     name="whatsapp"
-                                    class="w-full px-4 py-3 bg-white bg-opacity-10 border border-gray-600 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent text-white placeholder-gray-400 transition-all duration-300"
+                                    class="w-full px-4 py-4 sm:py-3 bg-white bg-opacity-10 border border-gray-600 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent text-white placeholder-gray-400 transition-all duration-300 text-base"
                                     placeholder="+1 (XXX) XXX-XXXX"
                                     required
                                 >
@@ -723,7 +1273,7 @@
                                 <input
                                     type="email"
                                     name="email"
-                                    class="w-full px-4 py-3 bg-white bg-opacity-10 border border-gray-600 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent text-white placeholder-gray-400 transition-all duration-300"
+                                    class="w-full px-4 py-4 sm:py-3 bg-white bg-opacity-10 border border-gray-600 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent text-white placeholder-gray-400 transition-all duration-300 text-base"
                                     placeholder="email@ou.com"
                                     required
                                 >
@@ -737,7 +1287,7 @@
                                 <input
                                     type="text"
                                     name="city"
-                                    class="w-full px-4 py-3 bg-white bg-opacity-10 border border-gray-600 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent text-white placeholder-gray-400 transition-all duration-300"
+                                    class="w-full px-4 py-4 sm:py-3 bg-white bg-opacity-10 border border-gray-600 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent text-white placeholder-gray-400 transition-all duration-300 text-base"
                                     placeholder="Boston, MA"
                                     required
                                 >
@@ -770,7 +1320,7 @@
     </section>
 
     <!-- 3D Book Preview Section -->
-    <section id="book-preview" class="py-24 bg-dark-bg relative overflow-hidden">
+    <section id="book-preview" class="py-16 sm:py-24 bg-dark-bg relative overflow-hidden">
         <!-- Subtle background pattern -->
         <div class="absolute inset-0 opacity-5">
             <div class="absolute inset-0" style="background-image: radial-gradient(circle at 2px 2px, #D4AF37 1px, transparent 0); background-size: 40px 40px;"></div>
@@ -778,33 +1328,33 @@
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <!-- Section Header -->
-            <div class="text-center mb-16">
-                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold mb-4">
+            <div class="text-center mb-12 sm:mb-16">
+                <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-bold mb-4">
                     <span class="text-white">Gade yon </span>
                     <span class="text-gold">previzyon</span>
                     <span class="text-white"> liv fotografi an</span>
                 </h2>
-                <p class="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto">
+                <p class="text-base sm:text-lg md:text-xl text-gray-400 max-w-2xl mx-auto">
                     Men 5 paj esklizif ou ka li kounye a.
                 </p>
             </div>
 
             <!-- Split View Container -->
-            <div class="grid lg:grid-cols-[320px_1fr] gap-8 items-start">
+            <div class="flex flex-col lg:grid lg:grid-cols-[320px_1fr] gap-8 items-start">
                 
-                <!-- Left: Index / Chapter List -->
-                <div class="relative">
-                    <div class="glassmorphism rounded-2xl p-6 lg:sticky lg:top-8">
+                <!-- Left: Index / Chapter List - FULL WIDTH ON MOBILE -->
+                <div class="relative w-full lg:w-auto order-1 lg:order-none">
+                    <div class="glassmorphism rounded-2xl p-4 sm:p-6 lg:sticky lg:top-8 max-h-[60vh] lg:max-h-none overflow-y-auto lg:overflow-y-visible w-full">
                         <!-- Index Header -->
                         <div class="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
-                            <div class="w-10 h-10 rounded-full gradient-gold flex items-center justify-center">
+                            <div class="w-10 h-10 rounded-full gradient-gold flex items-center justify-center flex-shrink-0">
                                 <svg class="w-5 h-5 text-dark-bg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                                 </svg>
                             </div>
-                            <div>
-                                <h3 class="text-white font-bold text-lg">Tablo Konteni</h3>
-                                <p class="text-gray-500 text-sm">5 Chapit Esansyèl</p>
+                            <div class="min-w-0 flex-1">
+                                <h3 class="text-white font-bold text-base sm:text-lg">Tablo Konteni</h3>
+                                <p class="text-gray-500 text-xs sm:text-sm">5 Chapit Esansyèl</p>
                             </div>
                         </div>
 
@@ -827,7 +1377,7 @@
                 </div>
 
                 <!-- Right: 3D Book Content -->
-                <div class="book-3d-container relative">
+                <div class="book-3d-container relative w-full order-2 lg:order-none">
                     <!-- Glassmorphism Book Container -->
                     <div class="glassmorphism rounded-2xl overflow-hidden relative">
                         <!-- Book Page Content -->
@@ -857,9 +1407,9 @@
             </div>
 
             <!-- CTA Below -->
-            <div class="text-center mt-16">
-                <p class="text-gray-400 mb-4">Ou vle aprann tout sa?</p>
-                <button class="gradient-gold text-dark-bg font-semibold px-8 py-4 rounded-lg hover:opacity-90 transition-all duration-300 shadow-lg hover-lift transform hover:scale-105">
+            <div class="text-center mt-12 sm:mt-16">
+                <p class="text-gray-400 mb-4 text-sm sm:text-base">Ou vle aprann tout sa?</p>
+                <button class="w-full md:w-auto gradient-gold text-dark-bg font-semibold px-8 py-4 rounded-lg hover:opacity-90 transition-all duration-300 shadow-lg hover-lift transform hover:scale-105 text-base md:text-lg">
                     Enskri Gratis Kounye a
                 </button>
             </div>
@@ -867,39 +1417,39 @@
     </section>
 
     <!-- Pricing & Payment Section - Golden Ticket -->
-    <section class="py-24 relative overflow-hidden">
+    <section class="py-16 sm:py-24 relative overflow-hidden">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="gold-section-bg rounded-3xl p-8 md:p-12 lg:p-16 text-center shadow-2xl">
-                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-dark-bg mb-6">
+            <div class="gold-section-bg rounded-3xl p-6 sm:p-8 md:p-12 lg:p-16 text-center shadow-2xl w-full mx-4 sm:mx-0">
+                <h2 class="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-dark-bg mb-6">
                     Envesti nan lavni w <span class="text-white/90">san presyon</span>
                 </h2>
                 
                 <!-- Massive Crossed Out Price -->
                 <div class="mb-8">
-                    <p class="text-lg text-dark-bg/80 mb-2">Valè konplè:</p>
-                    <span class="text-6xl sm:text-7xl lg:text-8xl font-serif font-bold text-dark-bg/60 line-through">$497</span>
+                    <p class="text-base md:text-lg text-dark-bg/80 mb-2">Valè konplè:</p>
+                    <span class="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-serif font-bold text-dark-bg/60 line-through block">$497</span>
                 </div>
                 
-                <p class="text-lg sm:text-xl text-dark-bg/90 leading-relaxed max-w-3xl mx-auto mb-8">
+                <p class="text-base md:text-xl text-dark-bg/90 leading-relaxed max-w-3xl mx-auto mb-8">
                     Nou rann li fasil pou ou. Ou ka peye an <span class="text-dark-bg font-bold">4 fwa san enterè</span>. Pa gen okenn depo obligatwa pou w rezève plas ou jodi a.
                 </p>
                 
                 <div class="flex flex-wrap justify-center gap-4 mt-8">
-                    <div class="bg-dark-bg/20 border border-dark-bg/30 rounded-xl px-6 py-4">
-                        <p class="text-dark-bg font-bold text-2xl">$124.25</p>
-                        <p class="text-dark-bg/70 text-sm">× 4 peman</p>
+                    <div class="bg-dark-bg/20 border border-dark-bg/30 rounded-xl px-4 sm:px-6 py-3 sm:py-4">
+                        <p class="text-dark-bg font-bold text-xl sm:text-2xl">$124.25</p>
+                        <p class="text-dark-bg/70 text-xs sm:text-sm">× 4 peman</p>
                     </div>
-                    <div class="bg-dark-bg/20 border border-dark-bg/30 rounded-xl px-6 py-4">
-                        <p class="text-dark-bg font-bold text-2xl">$0</p>
-                        <p class="text-dark-bg/70 text-sm">Depo jodi a</p>
+                    <div class="bg-dark-bg/20 border border-dark-bg/30 rounded-xl px-4 sm:px-6 py-3 sm:py-4">
+                        <p class="text-dark-bg font-bold text-xl sm:text-2xl">$0</p>
+                        <p class="text-dark-bg/70 text-xs sm:text-sm">Depo jodi a</p>
                     </div>
-                    <div class="bg-dark-bg/20 border border-dark-bg/30 rounded-xl px-8 py-4">
-                        <p class="text-dark-bg font-bold text-3xl">0%</p>
-                        <p class="text-dark-bg/70 text-sm font-semibold">Enterè</p>
+                    <div class="bg-dark-bg/20 border border-dark-bg/30 rounded-xl px-6 sm:px-8 py-3 sm:py-4">
+                        <p class="text-dark-bg font-bold text-2xl sm:text-3xl">0%</p>
+                        <p class="text-dark-bg/70 text-xs sm:text-sm font-semibold">Enterè</p>
                     </div>
                 </div>
                 
-                <button class="mt-10 bg-dark-bg text-gold font-bold px-12 py-5 rounded-xl hover:bg-dark-bg/90 transition-all duration-300 shadow-lg hover-lift transform hover:scale-105 text-xl border-2 border-dark-bg">
+                <button class="mt-8 sm:mt-10 w-full md:w-auto bg-dark-bg text-gold font-bold px-8 sm:px-12 py-4 sm:py-5 rounded-xl hover:bg-dark-bg/90 transition-all duration-300 shadow-lg hover-lift transform hover:scale-105 text-lg sm:text-xl border-2 border-dark-bg">
                     Rezève Plas ou Gratis
                 </button>
             </div>
@@ -907,18 +1457,18 @@
     </section>
 
     <!-- Mastery Section (Bento Grid) -->
-    <section class="py-24 bg-dark-bg relative overflow-hidden">
+    <section class="py-16 sm:py-24 bg-dark-bg relative overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-white mb-4">
+            <div class="text-center mb-12 sm:mb-16">
+                <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-white mb-4">
                     Sa w <span class="text-gold">pral aprann</span>
                 </h2>
-                <p class="text-lg text-gray-400 max-w-2xl mx-auto">
+                <p class="text-base sm:text-lg text-gray-400 max-w-2xl mx-auto">
                     5 teknik esansyèl pou w vin yon fotograf pwofesyonèl
                 </p>
             </div>
 
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Card 1: Kijan pou kenbe kamera a -->
                 <div class="mastery-card bento-card-image glassmorphism rounded-2xl overflow-hidden h-80">
                     <img src="/images/Kenbe Camera.jpg" alt="Kijan pou kenbe kamera a" class="w-full h-full object-cover object-center">
@@ -967,20 +1517,20 @@
                     </div>
                 </div>
 
-                <!-- Card 5: Aprann fè Portraits -->
+                <!-- Card 5: Règ Pòtrè yo -->
                 <div class="mastery-card bento-card-image glassmorphism rounded-2xl overflow-hidden h-80">
-                    <img src="/images/MIKA44.jpg" alt="Aprann fè Portraits" class="w-full h-full object-cover object-center" style="object-position: 50% 30%;">
+                    <img src="/images/MIKA44.jpg" alt="Règ Pòtrè yo" class="w-full h-full object-cover object-center" style="object-position: 50% 30%;">
                     <div class="bento-card-overlay"></div>
                     <div class="absolute bottom-0 left-0 right-0 p-6">
-                        <h3 class="text-2xl font-serif font-extrabold text-gold mb-2">Aprann fè Portraits</h3>
+                        <h3 class="text-2xl font-serif font-extrabold text-gold mb-2">Règ Pòtrè yo</h3>
                         <p class="text-gray-300 text-sm leading-relaxed">
-                            Teknik koupe foto (Crop) ak jan pou w swiv Règ de Twa (Rule of Thirds).
+                            Aprann règ 'Rule of Thirds' la ak ki kote ou pa dwe janm koupe nan kò yon moun lè w ap fè pòtrè pou rezilta pwofesyonèl.
                         </p>
                     </div>
                 </div>
 
                 <!-- Card 6: Software & AI (Full Width) -->
-                <div class="mastery-card bento-card-image glassmorphism rounded-2xl overflow-hidden h-80 md:col-span-2 lg:col-span-1">
+                <div class="mastery-card bento-card-image glassmorphism rounded-2xl overflow-hidden h-80 md:col-span-2 lg:col-span-1 w-full">
                     <img src="/images/MIKA40.jpg" alt="Edisyon Pwofesyonèl ak AI" class="w-full h-full object-cover object-center" style="filter: saturate(0.8) contrast(1.1);">
                     <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 to-transparent">
                         <h3 class="text-2xl font-serif font-extrabold text-gold mb-2">Edisyon AI</h3>
@@ -994,7 +1544,7 @@
     </section>
 
     <!-- Logistics & Urgency Section -->
-    <section class="py-24 urgency-bg relative overflow-hidden">
+    <section class="py-16 sm:py-24 urgency-bg relative overflow-hidden">
         <!-- Blurry Background Image -->
         <div class="absolute inset-0 z-[-3]">
             <img src="/images/MIKA36.jpg" alt="" class="w-full h-full object-cover" style="filter: blur(12px); transform: scale(1.1);">
@@ -1005,7 +1555,7 @@
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gold/10 rounded-full blur-[150px] pointer-events-none z-[-1]"></div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="grid lg:grid-cols-2 gap-16 items-center">
+            <div class="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
                 <!-- Left: Massive Date -->
                 <div class="text-center lg:text-left">
                     <!-- Hourglass Icon -->
@@ -1017,15 +1567,15 @@
                     </div>
                     
                     <div class="date-glow">
-                        <h2 class="text-7xl sm:text-8xl lg:text-9xl font-serif font-bold text-white leading-none mb-2" style="text-shadow: 0 4px 30px rgba(0,0,0,0.5);">
+                        <h2 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-serif font-bold text-white leading-none mb-2" style="text-shadow: 0 4px 30px rgba(0,0,0,0.5);">
                             Samdi
                         </h2>
-                        <h2 class="text-7xl sm:text-8xl lg:text-9xl font-serif font-bold leading-none mb-4 text-gold-gradient" style="text-shadow: 0 4px 30px rgba(212,175,55,0.3);">
+                        <h2 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-serif font-bold leading-none mb-4 text-gold-gradient" style="text-shadow: 0 4px 30px rgba(212,175,55,0.3);">
                             10 Janvye
                         </h2>
-                        <p class="text-3xl sm:text-4xl font-serif text-white/90 mt-6">Boston, MA</p>
+                        <p class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-serif text-white/90 mt-6">Boston, MA</p>
                     </div>
-                    <p class="text-xl text-gray-300 mt-8 max-w-lg">
+                    <p class="text-base sm:text-lg md:text-xl text-gray-300 mt-6 sm:mt-8 max-w-lg">
                         Yon jou sèlman pou w chanje vizyon w sou fotografi. Pa rate okazyon sa a.
                     </p>
                 </div>
@@ -1034,28 +1584,28 @@
                 <div class="space-y-6">
                     <!-- Highlight 1 -->
                     <div class="highlight-item">
-                        <div class="w-10 h-10 rounded-full bg-gold flex-shrink-0 flex items-center justify-center text-dark-bg font-bold">1</div>
-                        <p class="text-lg text-gray-200 mt-1">Pratik an dirèk ak bèl modèl pwofesyonèl.</p>
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gold flex-shrink-0 flex items-center justify-center text-dark-bg font-bold text-sm sm:text-base">1</div>
+                        <p class="text-base sm:text-lg text-gray-200 mt-1">Pratik an dirèk ak bèl modèl pwofesyonèl.</p>
                     </div>
 
                     <!-- Highlight 2 -->
                     <div class="highlight-item">
-                        <div class="w-10 h-10 rounded-full bg-gold flex-shrink-0 flex items-center justify-center text-dark-bg font-bold">2</div>
-                        <p class="text-lg text-gray-200 mt-1">Tout zouti edisyon (Plugins/Actions) yo enkli gratis.</p>
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gold flex-shrink-0 flex items-center justify-center text-dark-bg font-bold text-sm sm:text-base">2</div>
+                        <p class="text-base sm:text-lg text-gray-200 mt-1">Tout zouti edisyon (Plugins/Actions) yo enkli gratis.</p>
                     </div>
 
                     <!-- Highlight 3 -->
                     <div class="highlight-item">
-                        <div class="w-10 h-10 rounded-full bg-gold flex-shrink-0 flex items-center justify-center text-dark-bg font-bold">3</div>
-                        <p class="text-lg text-gray-200 mt-1">N ap moutre w kijan pou w monte yon <span class="text-gold font-bold">"Kit Bon Mache"</span> pou w kòmanse fè kòb jodi a.</p>
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gold flex-shrink-0 flex items-center justify-center text-dark-bg font-bold text-sm sm:text-base">3</div>
+                        <p class="text-base sm:text-lg text-gray-200 mt-1">N ap moutre w kijan pou w monte yon <span class="text-gold font-bold">"Kit Bon Mache"</span> pou w kòmanse fè kòb jodi a.</p>
                     </div>
 
                     <!-- Urgent CTA with Pulse -->
-                    <div class="pt-8">
-                        <button class="w-full gradient-gold text-dark-bg font-bold py-6 px-8 rounded-2xl hover:opacity-90 transition-all duration-300 pulse-gold transform hover:scale-[1.02] text-xl">
+                    <div class="pt-6 sm:pt-8">
+                        <button class="w-full gradient-gold text-dark-bg font-bold py-5 sm:py-6 px-6 sm:px-8 rounded-2xl hover:opacity-90 transition-all duration-300 pulse-gold transform hover:scale-[1.02] text-lg sm:text-xl">
                             Enskri Gratis Kounye a
                         </button>
-                        <p class="text-center text-gray-400 text-sm mt-4">
+                        <p class="text-center text-gray-400 text-xs sm:text-sm mt-4">
                             * Valè $497 - Enskripsyon gratis. Pa gen depo.
                         </p>
                     </div>
@@ -1065,81 +1615,81 @@
     </section>
 
     <!-- Why Choose Us Section -->
-    <section class="py-20 bg-dark-bg">
+    <section class="py-12 sm:py-20 bg-dark-bg">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl lg:text-5xl font-serif font-bold text-gold mb-4">
+            <div class="text-center mb-12 sm:mb-16">
+                <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-gold mb-4">
                     Poukisa chwazi nou?
                 </h2>
-                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                <p class="text-base sm:text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
                     Eksperyans pwofesyonèl ak aprantisaj pratik pou vin yon fotograf eksepsyonèl
                 </p>
             </div>
 
-            <div class="grid md:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
                 <!-- Feature 1 -->
-                <div class="text-center glassmorphism rounded-xl p-8 hover-lift">
-                    <div class="w-16 h-16 gradient-gold rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8 text-dark-bg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="text-center glassmorphism rounded-xl p-6 sm:p-8 hover-lift">
+                    <div class="w-12 h-12 sm:w-16 sm:h-16 gradient-gold rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-6 h-6 sm:w-8 sm:h-8 text-dark-bg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                         </svg>
                     </div>
-                    <h3 class="text-xl font-bold mb-2">Aprantisaj Rapid</h3>
-                    <p class="text-gray-300">Mètòd akselere pou aprann fotografi pwofesyonèl rapid</p>
+                    <h3 class="text-lg sm:text-xl font-bold mb-2">Aprantisaj Rapid</h3>
+                    <p class="text-sm sm:text-base text-gray-300">Mètòd akselere pou aprann fotografi pwofesyonèl rapid</p>
                 </div>
 
                 <!-- Feature 2 -->
-                <div class="text-center glassmorphism rounded-xl p-8 hover-lift">
-                    <div class="w-16 h-16 gradient-gold rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8 text-dark-bg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="text-center glassmorphism rounded-xl p-6 sm:p-8 hover-lift">
+                    <div class="w-12 h-12 sm:w-16 sm:h-16 gradient-gold rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-6 h-6 sm:w-8 sm:h-8 text-dark-bg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                         </svg>
                     </div>
-                    <h3 class="text-xl font-bold mb-2">Klas trè Pratik</h3>
-                    <p class="text-gray-300">Pratik ak modèl pwofesyonèl Inkli</p>
+                    <h3 class="text-lg sm:text-xl font-bold mb-2">Klas trè Pratik</h3>
+                    <p class="text-sm sm:text-base text-gray-300">Pratik ak modèl pwofesyonèl Inkli</p>
                 </div>
 
                 <!-- Feature 3 -->
-                <div class="text-center glassmorphism rounded-xl p-8 hover-lift">
-                    <div class="w-16 h-16 gradient-gold rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8 text-dark-bg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="text-center glassmorphism rounded-xl p-6 sm:p-8 hover-lift">
+                    <div class="w-12 h-12 sm:w-16 sm:h-16 gradient-gold rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-6 h-6 sm:w-8 sm:h-8 text-dark-bg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
                         </svg>
                     </div>
-                    <h3 class="text-xl font-bold mb-2">Edit ak AI</h3>
-                    <p class="text-gray-300">Aprann Lightroom, Photoshop, ak zouti AI pou edit imaj</p>
+                    <h3 class="text-lg sm:text-xl font-bold mb-2">Edit ak AI</h3>
+                    <p class="text-sm sm:text-base text-gray-300">Aprann Lightroom, Photoshop, ak zouti AI pou edit imaj</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="bg-black py-12">
+    <footer class="bg-black py-8 sm:py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h3 class="text-2xl font-serif font-bold text-gold mb-4">
+            <h3 class="text-xl sm:text-2xl font-serif font-bold text-gold mb-3 sm:mb-4">
                 Haitian Photography School
             </h3>
-            <p class="text-gray-400 mb-6">
+            <p class="text-sm sm:text-base text-gray-400 mb-4 sm:mb-6">
                 Vin yon fotograf pwofesyonèl nan Boston - Klas Samdi 8 Janvye
             </p>
-            <div class="flex justify-center space-x-6">
+            <div class="flex justify-center space-x-4 sm:space-x-6">
                 <a href="#" class="text-gold hover:text-gold-light transition-colors">
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
                     </svg>
                 </a>
                 <a href="#" class="text-gold hover:text-gold-light transition-colors">
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.751.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.746-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24.009c6.624 0 11.99-5.367 11.99-11.987C24.007 5.367 18.641.001 12.017.001z"/>
                     </svg>
                 </a>
                 <a href="#" class="text-gold hover:text-gold-light transition-colors">
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
                     </svg>
                 </a>
             </div>
-            <p class="text-sm text-gray-500 mt-6">
+            <p class="text-xs sm:text-sm text-gray-500 mt-4 sm:mt-6">
                 © 2025 Haitian Photography School. Tout dwa rezève.
             </p>
         </div>
@@ -1209,20 +1759,21 @@
         function renderChapterNav() {
             chapterNav.innerHTML = bookPages.map((page, index) => `
                 <button 
-                    class="chapter-item w-full text-left p-4 rounded-xl border border-transparent ${index === currentPageIndex ? 'active' : ''}"
+                    class="chapter-item w-full text-left p-3 sm:p-4 rounded-xl border border-transparent ${index === currentPageIndex ? 'active' : ''}"
                     data-index="${index}"
+                    style="word-wrap: break-word; overflow-wrap: break-word;"
                 >
-                    <div class="flex items-start gap-3">
-                        <span class="text-2xl font-serif font-bold ${index === currentPageIndex ? 'text-gold' : 'text-gray-600'} transition-colors">
+                    <div class="flex items-start gap-2 sm:gap-3">
+                        <span class="text-xl sm:text-2xl font-serif font-bold ${index === currentPageIndex ? 'text-gold' : 'text-gray-600'} transition-colors flex-shrink-0">
                             ${String(page.id).padStart(2, '0')}
                         </span>
                         <div class="flex-1 min-w-0">
-                            <h4 class="font-semibold ${index === currentPageIndex ? 'text-gold' : 'text-white'} truncate transition-colors">
+                            <h4 class="font-semibold text-sm sm:text-base ${index === currentPageIndex ? 'text-gold' : 'text-white'} transition-colors" style="word-wrap: break-word; overflow-wrap: break-word;">
                                 ${page.title}
                             </h4>
-                            <p class="text-gray-500 text-sm truncate">${page.subtitle}</p>
+                            <p class="text-gray-500 text-xs sm:text-sm mt-1" style="word-wrap: break-word; overflow-wrap: break-word;">${page.subtitle}</p>
                         </div>
-                        ${index === currentPageIndex ? '<div class="w-2 h-2 rounded-full bg-gold mt-2"></div>' : ''}
+                        ${index === currentPageIndex ? '<div class="w-2 h-2 rounded-full bg-gold mt-2 flex-shrink-0"></div>' : ''}
                     </div>
                 </button>
             `).join('');
@@ -1246,9 +1797,9 @@
             const animateClass = animate ? 'book-page-flip-enter' : '';
 
             bookContent.innerHTML = `
-                <div class="grid md:grid-cols-2 ${animateClass}">
+                <div class="flex flex-col md:grid md:grid-cols-2 ${animateClass}">
                     <!-- Left: Image -->
-                    <div class="relative aspect-[3/4] md:aspect-auto md:h-[500px] overflow-hidden">
+                    <div class="relative aspect-[3/4] md:aspect-auto md:h-[500px] overflow-hidden order-1 md:order-none">
                         <img 
                             src="${page.image}" 
                             alt="${page.title}"
@@ -1267,19 +1818,19 @@
                     </div>
 
                     <!-- Right: Content -->
-                    <div class="p-8 md:p-12 flex flex-col justify-center">
+                    <div class="p-6 sm:p-8 md:p-12 flex flex-col justify-center order-2 md:order-none">
                         <!-- Chapter Number -->
-                        <span class="page-number-large text-6xl md:text-8xl font-bold mb-4 content-animate" style="--delay: 200ms;">
+                        <span class="page-number-large text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-bold mb-4 content-animate" style="--delay: 200ms;">
                             ${String(page.id).padStart(2, '0')}
                         </span>
 
                         <!-- Title -->
-                        <h3 class="text-2xl md:text-3xl font-serif font-bold text-white mb-2 content-animate" style="--delay: 300ms;">
+                        <h3 class="text-xl sm:text-2xl md:text-3xl font-serif font-bold text-white mb-2 content-animate" style="--delay: 300ms;">
                             ${page.title}
                         </h3>
 
                         <!-- Subtitle -->
-                        <p class="text-gold font-medium mb-6 content-animate" style="--delay: 400ms;">
+                        <p class="text-gold font-medium mb-4 sm:mb-6 text-sm sm:text-base content-animate" style="--delay: 400ms;">
                             ${page.subtitle}
                         </p>
 
@@ -1287,7 +1838,7 @@
                         <div class="w-16 h-0.5 gradient-gold mb-6 divider-animate"></div>
 
                         <!-- Description -->
-                        <p class="text-gray-300 leading-relaxed mb-8 content-animate" style="--delay: 500ms;">
+                        <p class="text-gray-300 leading-relaxed mb-6 sm:mb-8 text-sm sm:text-base content-animate" style="--delay: 500ms;">
                             ${page.description}
                         </p>
 
@@ -1379,12 +1930,13 @@
         // ============================================
         // PARALLAX EFFECT
         // ============================================
-        window.addEventListener('scroll', function() {
-            const scrolled = window.pageYOffset;
-            const parallax = document.querySelector('.parallax-bg');
-            const rate = scrolled * -0.5;
-            parallax.style.transform = 'translate3d(0, ' + rate + 'px, 0)';
-        });
+        // Parallax effect disabled (removed background images)
+        // window.addEventListener('scroll', function() {
+        //     const scrolled = window.pageYOffset;
+        //     const parallax = document.querySelector('.parallax-bg');
+        //     const rate = scrolled * -0.5;
+        //     parallax.style.transform = 'translate3d(0, ' + rate + 'px, 0)';
+        // });
 
         // ============================================
         // FORM SUBMISSION & SUCCESS MODAL
@@ -1491,6 +2043,17 @@
         // INITIALIZE
         // ============================================
         document.addEventListener('DOMContentLoaded', () => {
+            // Ensure page starts at top on mobile
+            window.scrollTo(0, 0);
+            
+            // Force headline visibility on mobile
+            const headline = document.querySelector('.hero-text-container h1');
+            if (headline) {
+                headline.style.display = 'block';
+                headline.style.visibility = 'visible';
+                headline.style.opacity = '1';
+            }
+
             // Ensure success modal is hidden initially
             const successModal = document.getElementById('successModal');
             if (successModal) {
