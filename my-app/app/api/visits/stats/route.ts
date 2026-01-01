@@ -30,41 +30,33 @@ export async function GET(request: NextRequest) {
       .select('*', { count: 'exact', head: true });
     
     if (visitsCountError) {
+      console.error('Visits count error:', visitsCountError);
       throw visitsCountError;
     }
     
-    // Get total leads count
+    // Get total leads count directly from leads table for accuracy
     const { count: totalLeads, error: leadsCountError } = await supabase
       .from('leads')
       .select('*', { count: 'exact', head: true });
     
     if (leadsCountError) {
+      console.error('Leads count error:', leadsCountError);
       throw leadsCountError;
     }
     
-    // Get converted visits count
+    // Get converted visits count (people who actually reached the thank you state)
     const { count: convertedVisits, error: convertedError } = await supabase
       .from('visits')
       .select('*', { count: 'exact', head: true })
       .eq('converted', true);
     
-    if (convertedError) {
-      throw convertedError;
-    }
-    
-    // Get bounce rate (visits with duration < 10 seconds)
-    const { count: bouncedVisits, error: bounceError } = await supabase
-      .from('visits')
-      .select('*', { count: 'exact', head: true })
-      .lt('visit_duration', 10);
-    
-    if (bounceError) {
-      throw bounceError;
-    }
+    // Use the higher of the two for conversion count to be safe
+    // Sometimes lead is captured but visit not updated, or vice-versa
+    const effectiveConvertedCount = Math.max(totalLeads || 0, convertedVisits || 0);
     
     // Calculate metrics
     const conversionRate = totalVisits && totalVisits > 0 
-      ? Math.round((convertedVisits || 0) / totalVisits * 10000) / 100 
+      ? Math.round((effectiveConvertedCount) / totalVisits * 10000) / 100 
       : 0;
     
     const bounceRate = totalVisits && totalVisits > 0

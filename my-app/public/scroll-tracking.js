@@ -57,11 +57,36 @@
     
     // Track scroll milestone
     function trackScrollMilestone(milestone, scrollData) {
+        // Get visit ID from session storage
+        let visitId = sessionStorage.getItem('current_visit_id');
+        
+        // If visitId is not available, try to wait for it (up to 3 seconds)
+        if (!visitId) {
+            console.log(`⏳ Waiting for visit_id to track ${milestone}%...`);
+            let attempts = 0;
+            const checkInterval = setInterval(() => {
+                visitId = sessionStorage.getItem('current_visit_id');
+                attempts++;
+                
+                if (visitId || attempts > 15) { // 15 attempts * 200ms = 3s
+                    clearInterval(checkInterval);
+                    if (visitId) {
+                        proceedWithTracking(milestone, scrollData, visitId);
+                    } else {
+                        console.warn(`⚠️ No visit_id found after 3s, tracking ${milestone}% without it.`);
+                        proceedWithTracking(milestone, scrollData, null);
+                    }
+                }
+            }, 200);
+            return;
+        }
+
+        proceedWithTracking(milestone, scrollData, visitId);
+    }
+
+    function proceedWithTracking(milestone, scrollData, visitId) {
         // Mark as tracked to prevent duplicates
         trackedMilestones.add(milestone);
-        
-        // Get visit ID from session storage
-        const visitId = sessionStorage.getItem('current_visit_id');
         
         // Get current section
         const sectionName = getCurrentSection(scrollData.percentage, scrollData.pageHeight);
@@ -80,31 +105,40 @@
             trackingData.visit_id = parseInt(visitId);
         }
         
+        console.log(`📤 Sending scroll tracking: ${milestone}% (${sectionName})`, trackingData);
+        
         // Send tracking request (use sendBeacon for reliability)
         const blob = new Blob([JSON.stringify(trackingData)], { type: 'application/json' });
-        const sent = navigator.sendBeacon('/api/track-scroll', blob);
+        
+        // Try sendBeacon first
+        let sent = false;
+        try {
+            sent = navigator.sendBeacon('/api/track-scroll', blob);
+        } catch (e) {
+            console.error('Error with sendBeacon:', e);
+        }
         
         if (!sent) {
-            // Fallback to fetch if sendBeacon fails
+            // Fallback to fetch
             fetch('/api/track-scroll', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(trackingData),
-                keepalive: true // Keep request alive even if page unloads
+                keepalive: true
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    console.log(`✅ Scroll milestone tracked: ${milestone}% (${sectionName})`);
+                    console.log(`✅ Scroll milestone tracked: ${milestone}%`);
                 }
             })
             .catch(error => {
-                console.error('Error tracking scroll:', error);
+                console.error('Error tracking scroll via fetch:', error);
             });
         } else {
-            console.log(`✅ Scroll milestone tracked: ${milestone}% (${sectionName})`);
+            console.log(`✅ Scroll milestone tracked via sendBeacon: ${milestone}%`);
         }
     }
     

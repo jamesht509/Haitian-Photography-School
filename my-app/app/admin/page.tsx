@@ -352,10 +352,10 @@ export default function AdminDashboard() {
               <div className="mb-8">
                 <h2 className="text-2xl font-bold text-white mb-6">Analytics</h2>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                  {/* Total Visitors */}
+                  {/* Total Visitantes */}
                   <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-gray-400 text-sm font-medium">Total Visitors</h3>
+                      <h3 className="text-gray-400 text-sm font-medium">Total Visitantes</h3>
                       <div className="w-10 h-10 rounded-full bg-[#D4AF37]/20 flex items-center justify-center">
                         <svg className="w-5 h-5 text-[#D4AF37]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -363,35 +363,35 @@ export default function AdminDashboard() {
                         </svg>
                       </div>
                     </div>
-                    <p className="text-4xl font-bold text-white">{visitStats.total_visits.toLocaleString()}</p>
+                    <p className="text-4xl font-bold text-white">{(visitStats.total_visits || 0).toLocaleString()}</p>
                   </div>
 
-                  {/* Conversion Rate */}
+                  {/* Taxa de Conversão */}
                   <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-gray-400 text-sm font-medium">Conversion Rate</h3>
+                      <h3 className="text-gray-400 text-sm font-medium">Taxa de Conversão</h3>
                       <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
                         <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                       </div>
                     </div>
-                    <p className="text-4xl font-bold text-white">{visitStats.conversion_rate.toFixed(2)}%</p>
-                    <p className="text-xs text-gray-400 mt-1">{visitStats.converted_visits} of {visitStats.total_visits} converted</p>
+                    <p className="text-4xl font-bold text-white">{(visitStats.conversion_rate || 0).toFixed(2)}%</p>
+                    <p className="text-xs text-gray-400 mt-1">{Math.max(visitStats.converted_visits || 0, visitStats.total_leads || 0)} de {visitStats.total_visits || 0} convertidos</p>
                   </div>
 
-                  {/* Bounce Rate */}
+                  {/* Drop-off (Abandonment) */}
                   <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-gray-400 text-sm font-medium">Bounce Rate</h3>
+                      <h3 className="text-gray-400 text-sm font-medium">Drop-off</h3>
                       <div className="w-10 h-10 rounded-full bg-orange-500/20 flex items-center justify-center">
                         <svg className="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>
                       </div>
                     </div>
-                    <p className="text-4xl font-bold text-white">{visitStats.bounce_rate.toFixed(2)}%</p>
-                    <p className="text-xs text-gray-400 mt-1">{visitStats.bounced_visits} left in &lt;10s</p>
+                    <p className="text-4xl font-bold text-white">{(100 - (visitStats.conversion_rate || 0)).toFixed(2)}%</p>
+                    <p className="text-xs text-gray-400 mt-1">{((visitStats.total_visits || 0) - Math.max(visitStats.converted_visits || 0, visitStats.total_leads || 0))} saíram sem se inscrever</p>
                   </div>
 
                   {/* Total Leads */}
@@ -404,7 +404,7 @@ export default function AdminDashboard() {
                         </svg>
                       </div>
                     </div>
-                    <p className="text-4xl font-bold text-white">{visitStats.total_leads.toLocaleString()}</p>
+                    <p className="text-4xl font-bold text-white">{(visitStats.total_leads || 0).toLocaleString()}</p>
                   </div>
                 </div>
               </div>
@@ -420,7 +420,7 @@ export default function AdminDashboard() {
                     <div>
                       <h3 className="text-lg font-semibold text-white mb-4">Porcentagem de Usuários por Seção</h3>
                       <div className="space-y-4">
-                        {['Intro', '3D Book', 'Price/Offer', 'Footer'].map((section) => {
+                        {['Intro', '3D Book', 'Price/Offer', 'Content', 'Footer'].map((section) => {
                           const percentage = scrollStats.section_percentages[section] || 0;
                           const count = scrollStats.section_counts[section] || 0;
                           return (
@@ -436,11 +436,11 @@ export default function AdminDashboard() {
                                   className={`h-full ${getColorForPercentage(percentage)} transition-all duration-500 flex items-center justify-end pr-2`}
                                   style={{ width: `${Math.min(percentage, 100)}%` }}
                                 >
-                                  {percentage > 10 && (
+                                  {percentage > 5 && (
                                     <span className="text-xs font-semibold text-white">{count}</span>
                                   )}
                                 </div>
-                                {percentage <= 10 && (
+                                {percentage <= 5 && (
                                   <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-400">{count}</span>
                                 )}
                               </div>

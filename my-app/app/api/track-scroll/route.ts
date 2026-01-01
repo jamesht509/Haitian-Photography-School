@@ -41,13 +41,12 @@ export async function POST(request: NextRequest) {
     
     // Check if this milestone was already tracked for this visit (prevent duplicates)
     if (visit_id) {
-      const { data: existing } = await supabase
+      const { data: existing, error: existingError } = await supabase
         .from('scroll_tracking')
         .select('id')
         .eq('visit_id', visit_id)
         .eq('milestone', milestone)
-        .limit(1)
-        .single();
+        .maybeSingle();
       
       if (existing) {
         // Already tracked, return success without inserting
