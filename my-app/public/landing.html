@@ -259,13 +259,22 @@
 
         .parallax-bg {
             background-color: #000000;
-            z-index: -10;
-            pointer-events: none;
+            z-index: -10 !important;
+            pointer-events: none !important;
         }
 
         /* Parallax background - Base (Mobile) */
         .parallax-bg {
-            z-index: -10;
+            z-index: -10 !important;
+            pointer-events: none !important;
+        }
+        
+        /* Background images in parallax section - must not block interactions */
+        .parallax-bg img,
+        .parallax-bg > img,
+        section.parallax-bg img {
+            pointer-events: none !important;
+            z-index: -10 !important;
         }
         
         .hero-content {
@@ -287,8 +296,8 @@
 
         /* Dark Overlay - Send to back */
         .dark-overlay {
-            z-index: 0;
-            pointer-events: none;
+            z-index: 0 !important;
+            pointer-events: none !important;
         }
 
         /* Dark Overlay - Base (Mobile) */
@@ -379,20 +388,109 @@
                 position: relative !important;
                 z-index: 20 !important;
             }
+            
+            /* MOBILE FORM FIX - Critical fixes for touch interactions */
+            /* Ensure hero section doesn't block form */
+            section.hero,
+            section.parallax-bg {
+                pointer-events: auto !important;
+            }
+            
+            /* Dark overlay must not block */
+            section.hero .dark-overlay,
+            section.parallax-bg .dark-overlay {
+                pointer-events: none !important;
+                z-index: 0 !important;
+            }
+            
+            /* Form container - highest priority on mobile */
+            .form-container {
+                z-index: 999 !important;
+                position: relative !important;
+                pointer-events: auto !important;
+            }
+            
+            /* Form wrapper */
+            .form-container > div,
+            .form-container .glassmorphism-premium {
+                z-index: 999 !important;
+                position: relative !important;
+                pointer-events: auto !important;
+            }
+            
+            /* All form inputs - must be clickable */
+            .form-container input,
+            .form-container button,
+            .form-container textarea,
+            .form-container select {
+                pointer-events: auto !important;
+                z-index: 999 !important;
+                position: relative !important;
+                cursor: text !important;
+                min-height: 48px !important;
+                -webkit-tap-highlight-color: rgba(212, 175, 55, 0.3);
+            }
+            
+            /* Submit button */
+            .form-container button[type="submit"] {
+                cursor: pointer !important;
+                min-height: 48px !important;
+            }
+            
+            /* Form element itself */
+            .form-container form {
+                pointer-events: auto !important;
+                z-index: 999 !important;
+                position: relative !important;
+            }
+            
+            /* Hero content container - ensure it doesn't block */
+            .hero-content {
+                pointer-events: auto !important;
+            }
+            
+            /* Any pseudo-elements that might block */
+            section.hero::before,
+            section.hero::after,
+            section.parallax-bg::before,
+            section.parallax-bg::after,
+            .form-container::before,
+            .form-container::after {
+                pointer-events: none !important;
+                z-index: -1 !important;
+            }
         }
 
         /* Form Container - Ensure interactivity */
         .form-container {
-            position: relative;
-            z-index: 50;
-            pointer-events: auto;
+            position: relative !important;
+            z-index: 999 !important;
+            pointer-events: auto !important;
+        }
+        
+        /* Form container wrapper div */
+        .form-container > div {
+            position: relative !important;
+            z-index: 999 !important;
+            pointer-events: auto !important;
         }
 
         /* Form inputs and buttons - Ensure pointer events and z-index */
         form input, form button, form textarea, form select {
             pointer-events: auto !important;
-            z-index: 50 !important;
+            z-index: 999 !important;
             position: relative;
+            min-height: 48px !important;
+            cursor: text !important;
+        }
+        
+        /* Touch target size for mobile */
+        @media (max-width: 767px) {
+            form input, form textarea, form select {
+                min-height: 48px !important;
+                padding-top: 14px !important;
+                padding-bottom: 14px !important;
+            }
         }
 
         /* Specific form elements - Force pointer events */
@@ -409,6 +507,22 @@
         /* Ensure form container allows interactions */
         form {
             pointer-events: auto !important;
+            position: relative !important;
+            z-index: 999 !important;
+        }
+        
+        /* Glassmorphism premium - ensure it doesn't block */
+        .glassmorphism-premium {
+            pointer-events: auto !important;
+            position: relative !important;
+            z-index: 999 !important;
+        }
+        
+        /* Check for pseudo-elements on glassmorphism that might block */
+        .glassmorphism-premium::before,
+        .glassmorphism-premium::after {
+            pointer-events: none !important;
+            z-index: -1 !important;
         }
 
         /* CTA Buttons - Ensure they work */
@@ -1043,6 +1157,9 @@
             -webkit-backdrop-filter: blur(30px);
             border: 1px solid rgba(212, 175, 55, 0.3);
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            pointer-events: auto !important;
+            position: relative !important;
+            z-index: 999 !important;
         }
 
         /* Gold gradient text */
@@ -1195,7 +1312,7 @@
     <!-- Hero Section with Parallax -->
     <section class="hero relative min-h-screen flex flex-col md:flex-row items-start md:items-center justify-center parallax-bg pt-28 md:pt-0 pb-8 md:pb-0">
         <!-- Dark Overlay - Stronger on mobile for better text contrast -->
-        <div class="absolute inset-0 dark-overlay" style="background: linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.9) 100%); z-index: 0;"></div>
+        <div class="absolute inset-0 dark-overlay" style="background: linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.9) 100%); z-index: 0 !important; pointer-events: none !important;"></div>
 
         <!-- Content Container -->
         <div class="relative z-10 max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 hero-content w-full">
@@ -1247,6 +1364,7 @@
                                     name="name"
                                     class="w-full px-4 py-4 sm:py-3 bg-white bg-opacity-10 border border-gray-600 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent text-white placeholder-gray-400 transition-all duration-300 text-base"
                                     placeholder="Antre non ou konplè"
+                                    style="min-height: 48px; pointer-events: auto !important; cursor: text !important; z-index: 999 !important; position: relative;"
                                     required
                                 >
                             </div>
@@ -1261,6 +1379,7 @@
                                     name="whatsapp"
                                     class="w-full px-4 py-4 sm:py-3 bg-white bg-opacity-10 border border-gray-600 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent text-white placeholder-gray-400 transition-all duration-300 text-base"
                                     placeholder="+1 (XXX) XXX-XXXX"
+                                    style="min-height: 48px; pointer-events: auto !important; cursor: text !important; z-index: 999 !important; position: relative;"
                                     required
                                 >
                             </div>
@@ -1275,6 +1394,7 @@
                                     name="email"
                                     class="w-full px-4 py-4 sm:py-3 bg-white bg-opacity-10 border border-gray-600 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent text-white placeholder-gray-400 transition-all duration-300 text-base"
                                     placeholder="email@ou.com"
+                                    style="min-height: 48px; pointer-events: auto !important; cursor: text !important; z-index: 999 !important; position: relative;"
                                     required
                                 >
                             </div>
@@ -1289,6 +1409,7 @@
                                     name="city"
                                     class="w-full px-4 py-4 sm:py-3 bg-white bg-opacity-10 border border-gray-600 rounded-lg focus:ring-2 focus:ring-gold focus:border-transparent text-white placeholder-gray-400 transition-all duration-300 text-base"
                                     placeholder="Boston, MA"
+                                    style="min-height: 48px; pointer-events: auto !important; cursor: text !important; z-index: 999 !important; position: relative;"
                                     required
                                 >
                             </div>
@@ -1297,6 +1418,7 @@
                             <button
                                 type="submit"
                                 class="w-full gradient-gold text-dark-bg font-bold py-4 px-6 rounded-lg hover:opacity-90 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-lg cta-button"
+                                style="min-height: 48px; pointer-events: auto !important; cursor: pointer !important; z-index: 999 !important; position: relative;"
                             >
                                 Enskri Gratis Kounye a
                             </button>
