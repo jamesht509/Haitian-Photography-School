@@ -259,22 +259,63 @@
 
         .parallax-bg {
             background-color: #000000;
-            z-index: -10 !important;
-            pointer-events: none !important;
+            position: relative;
+            z-index: 1 !important;
+            pointer-events: auto !important;
         }
 
         /* Parallax background - Base (Mobile) */
         .parallax-bg {
-            z-index: -10 !important;
-            pointer-events: none !important;
+            z-index: 1 !important;
+            pointer-events: auto !important;
         }
         
         /* Background images in parallax section - must not block interactions */
-        .parallax-bg img,
-        .parallax-bg > img,
-        section.parallax-bg img {
+        .parallax-bg img.bg-parallax,
+        .parallax-bg > img:not(.content-img) {
             pointer-events: none !important;
-            z-index: -10 !important;
+            z-index: -1 !important;
+            position: absolute;
+        }
+        
+        /* Hero section - MUST allow interactions */
+        section.hero {
+            pointer-events: auto !important;
+            z-index: 10 !important;
+            position: relative !important;
+        }
+        
+        /* Ensure content is always above background */
+        .hero-content {
+            z-index: 100 !important;
+            position: relative !important;
+            pointer-events: auto !important;
+        }
+        
+        /* Hero section - MUST allow interactions - CRITICAL FIX */
+        section.hero {
+            pointer-events: auto !important;
+        }
+        
+        /* All children of hero section must allow interactions */
+        section.hero * {
+            pointer-events: auto !important;
+        }
+        
+        /* But background images and overlays should not block */
+        section.hero img:not(.cta-icon),
+        section.hero .dark-overlay {
+            pointer-events: none !important;
+        }
+        
+        /* Ensure CTA buttons are ALWAYS clickable and on top */
+        .cta-button, 
+        button.gradient-gold,
+        form button[type="submit"] {
+            pointer-events: auto !important;
+            z-index: 9999 !important;
+            position: relative !important;
+            cursor: pointer !important;
         }
         
         .hero-content {
@@ -313,11 +354,33 @@
 
         /* Hero Content - Bring to front */
         .hero-content {
-            position: relative;
-            z-index: 10;
-            pointer-events: auto;
+            position: relative !important;
+            z-index: 100 !important;
+            pointer-events: auto !important;
             display: flex;
             width: 100%;
+        }
+        
+        /* Hero content wrapper - ensure it doesn't block form or buttons */
+        .hero-content > div {
+            pointer-events: auto !important;
+            position: relative !important;
+            z-index: 100 !important;
+        }
+        
+        /* Hero text container - ensure buttons inside are clickable */
+        .hero-text-container {
+            pointer-events: auto !important;
+            position: relative !important;
+            z-index: 100 !important;
+        }
+        
+        /* Buttons inside hero-text-container must be above everything */
+        .hero-text-container button,
+        .hero-text-container .cta-button {
+            z-index: 1001 !important;
+            position: relative !important;
+            pointer-events: auto !important;
         }
 
         /* Ensure text container is visible on mobile */
@@ -447,6 +510,24 @@
             /* Hero content container - ensure it doesn't block */
             .hero-content {
                 pointer-events: auto !important;
+                z-index: 100 !important;
+            }
+            
+            /* Hero text container - ensure buttons are clickable */
+            .hero-text-container {
+                pointer-events: auto !important;
+                z-index: 100 !important;
+            }
+            
+            /* CTA buttons in hero section - highest priority */
+            .hero-text-container button,
+            .hero-text-container .cta-button,
+            .hero-content button,
+            .hero-content .cta-button {
+                z-index: 1001 !important;
+                position: relative !important;
+                pointer-events: auto !important;
+                cursor: pointer !important;
             }
             
             /* Any pseudo-elements that might block */
@@ -497,11 +578,10 @@
         input[name="name"], input[name="whatsapp"], input[name="email"], input[name="city"],
         button[type="submit"] {
             pointer-events: auto !important;
-            cursor: text !important;
-        }
-
-        button[type="submit"] {
             cursor: pointer !important;
+            z-index: 1000 !important;
+            position: relative !important;
+            min-height: 48px !important;
         }
 
         /* Ensure form container allows interactions */
@@ -527,8 +607,8 @@
 
         /* CTA Buttons - Ensure they work */
         .cta-button {
-            position: relative;
-            z-index: 200;
+            position: relative !important;
+            z-index: 1000 !important;
             pointer-events: auto !important;
             cursor: pointer !important;
         }
@@ -570,15 +650,16 @@
         input[type="text"], input[type="email"], input[type="tel"], 
         input[type="password"], textarea, select {
             pointer-events: auto !important;
-            z-index: 50 !important;
-            position: relative;
+            z-index: 1000 !important;
+            position: relative !important;
+            cursor: text !important;
         }
         
         /* Ensure buttons are always clickable */
         button, .cta-button {
             pointer-events: auto !important;
-            z-index: 50 !important;
-            position: relative;
+            z-index: 1000 !important;
+            position: relative !important;
             cursor: pointer !important;
         }
 
@@ -1310,9 +1391,9 @@
 
 
     <!-- Hero Section with Parallax -->
-    <section class="hero relative min-h-screen flex flex-col md:flex-row items-start md:items-center justify-center parallax-bg pt-28 md:pt-0 pb-8 md:pb-0">
+    <section class="hero relative min-h-screen flex flex-col md:flex-row items-start md:items-center justify-center parallax-bg pt-28 md:pt-0 pb-8 md:pb-0" style="z-index: 10 !important;">
         <!-- Dark Overlay - Stronger on mobile for better text contrast -->
-        <div class="absolute inset-0 dark-overlay" style="background: linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.9) 100%); z-index: 0 !important; pointer-events: none !important;"></div>
+        <div class="absolute inset-0 dark-overlay" style="background: linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.9) 100%); z-index: -1 !important; pointer-events: none !important;"></div>
 
         <!-- Content Container -->
         <div class="relative z-10 max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 hero-content w-full">
@@ -1321,10 +1402,9 @@
                 <div class="hero-text-container text-center md:text-left w-full md:w-auto flex-shrink-0 order-1 block" style="min-height: auto; display: block !important;">
                     <!-- Main Headline - VISIBLE ON ALL SCREENS -->
                     <h1 class="text-3xl md:text-5xl lg:text-7xl font-serif font-bold mb-4 md:mb-6 text-shadow leading-tight" style="display: block !important; visibility: visible !important; opacity: 1 !important;">
-                        <span class="text-white block">Sispann reve,</span>
-                        <span class="text-gold block">kòmanse aji</span>
-                        <span class="text-white text-2xl md:text-4xl lg:text-5xl block mt-2">Vin yon fotograf pwofesyonèl.</span>
+                        <span class="block text-white">Sispann reve, <span class="text-gold">kòmanse aji</span></span>
                     </h1>
+                    <p class="text-white text-2xl md:text-4xl lg:text-5xl font-serif font-bold text-shadow mt-2 mb-4">Vin yon fotograf pwofesyonèl.</p>
 
                     <!-- Price Offer - Maximum Impact -->
                     <div class="mb-8">
@@ -1336,7 +1416,7 @@
                     </div>
 
                     <!-- CTA Button - FULL WIDTH ON MOBILE -->
-                    <button class="w-full md:w-auto gradient-gold text-dark-bg font-bold px-8 py-4 rounded-lg hover:opacity-90 transition-opacity duration-300 text-base md:text-lg shadow-lg hover-lift cta-button">
+                    <button class="w-full md:w-auto gradient-gold text-dark-bg font-bold px-8 py-4 rounded-lg hover:opacity-90 transition-opacity duration-300 text-base md:text-lg shadow-lg hover-lift cta-button" style="z-index: 1001 !important; position: relative !important; pointer-events: auto !important; cursor: pointer !important;">
                         Enskri Gratis Kounye a
                     </button>
 
@@ -1418,7 +1498,7 @@
                             <button
                                 type="submit"
                                 class="w-full gradient-gold text-dark-bg font-bold py-4 px-6 rounded-lg hover:opacity-90 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-lg cta-button"
-                                style="min-height: 48px; pointer-events: auto !important; cursor: pointer !important; z-index: 999 !important; position: relative;"
+                                style="min-height: 48px; pointer-events: auto !important; cursor: pointer !important; z-index: 1000 !important; position: relative !important;"
                             >
                                 Enskri Gratis Kounye a
                             </button>

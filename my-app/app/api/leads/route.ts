@@ -142,15 +142,35 @@ export async function GET(request: NextRequest) {
     const rawPassword = process.env.ADMIN_PASSWORD || '';
     const adminPassword = rawPassword.trim();
     
+    // Debug logging (only in development or if DEBUG_AUTH is set)
+    if (process.env.NODE_ENV === 'development' || process.env.DEBUG_AUTH === 'true') {
+      console.log('[AUTH DEBUG] ========================================');
+      console.log('[AUTH DEBUG] Admin password configured:', !!process.env.ADMIN_PASSWORD);
+      console.log('[AUTH DEBUG] Password length:', adminPassword.length);
+      console.log('[AUTH DEBUG] Expected header length:', `Bearer ${adminPassword}`.length);
+      console.log('[AUTH DEBUG] Received header:', authHeader ? 'YES' : 'NO');
+      console.log('[AUTH DEBUG] Received header length:', authHeader?.length || 0);
+    }
+    
     // Normalize comparison - trim both sides (input and env var)
     const expectedHeader = `Bearer ${adminPassword}`;
     const receivedHeader = authHeader?.trim() || '';
     
     if (receivedHeader !== expectedHeader) {
+      if (process.env.NODE_ENV === 'development' || process.env.DEBUG_AUTH === 'true') {
+        console.log('[AUTH DEBUG] Headers match: false');
+        console.log('[AUTH DEBUG] Expected:', expectedHeader);
+        console.log('[AUTH DEBUG] Received:', receivedHeader);
+      }
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
       );
+    }
+    
+    if (process.env.NODE_ENV === 'development' || process.env.DEBUG_AUTH === 'true') {
+      console.log('[AUTH DEBUG] Headers match: true');
+      console.log('[AUTH DEBUG] ========================================');
     }
     
     // Get Supabase client

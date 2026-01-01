@@ -61,19 +61,28 @@ export default function AdminDashboard() {
       const trimmedPassword = password.trim();
       const authHeader = `Bearer ${trimmedPassword}`;
       
+      // Debug logging
+      console.log('[FRONTEND] Attempting login...');
+      console.log('[FRONTEND] Password length:', trimmedPassword.length);
+      console.log('[FRONTEND] Auth header length:', authHeader.length);
+      
       const response = await fetch('/api/leads', {
         headers: {
           'Authorization': authHeader
         }
       });
       
+      console.log('[FRONTEND] Response status:', response.status);
+      
       if (response.ok) {
+        console.log('[FRONTEND] Login successful!');
         setIsAuthenticated(true);
         localStorage.setItem('admin_token', trimmedPassword);
         fetchData(trimmedPassword);
       } else {
         const errorData = await response.json().catch(() => ({}));
-        setError(`Senha incorreta (Status: ${response.status})`);
+        console.error('[FRONTEND] Login failed:', errorData);
+        setError(`Senha incorreta (Status: ${response.status}). Verifique se ADMIN_PASSWORD está configurado no Vercel.`);
       }
     } catch (err) {
       console.error('[FRONTEND] Login error:', err);
