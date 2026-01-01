@@ -2040,8 +2040,6 @@
             }
         }
 
-        document.querySelector('form').addEventListener('submit', handleFormSubmit);
-
         // ============================================
         // CTA BUTTONS - SCROLL TO FORM
         // ============================================
@@ -2086,6 +2084,15 @@
             renderBookContent(false);
             updateProgress();
             updateNavButtons();
+
+            // Attach form submit handler
+            const form = document.querySelector('form');
+            if (form) {
+                form.addEventListener('submit', handleFormSubmit);
+                console.log('✅ Form submit handler attached');
+            } else {
+                console.error('❌ Form not found!');
+            }
 
             // Attach scroll handlers to all CTA buttons (except submit button)
             const ctaButtons = document.querySelectorAll('button:not([type="submit"])');
