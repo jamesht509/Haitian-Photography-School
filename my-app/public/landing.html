@@ -1999,7 +1999,15 @@
                     body: JSON.stringify(data)
                 });
                 
-                const result = await response.json();
+                // Check if response is ok before parsing JSON
+                let result;
+                try {
+                    result = await response.json();
+                } catch (jsonError) {
+                    // If response is not JSON, get text instead
+                    const text = await response.text();
+                    throw new Error(`Server error: ${response.status} ${response.statusText}. ${text}`);
+                }
                 
                 if (response.ok && result.success) {
                     // Track conversion
@@ -2013,11 +2021,25 @@
                     
                     console.log('✅ Lead captured:', result.data);
                 } else {
-                    throw new Error(result.error || 'Failed to submit');
+                    // Handle API errors
+                    const errorMessage = result.error || result.message || 'Failed to submit form';
+                    const errorDetails = result.details ? `\n\nDetails: ${result.details}` : '';
+                    throw new Error(`${errorMessage}${errorDetails}`);
                 }
             } catch (error) {
                 console.error('Form submission error:', error);
-                alert('Te gen yon erè. Tanpri eseye ankò oswa kontakte nou sou WhatsApp.');
+                
+                // Show user-friendly error message
+                let errorMessage = 'Te gen yon erè. Tanpri eseye ankò oswa kontakte nou sou WhatsApp.';
+                
+                if (error instanceof TypeError && error.message.includes('fetch')) {
+                    errorMessage = 'Pwoblèm koneksyon. Tanpri verifye entènèt ou epi eseye ankò.';
+                } else if (error.message) {
+                    // Show more specific error if available
+                    errorMessage = `Erè: ${error.message}`;
+                }
+                
+                alert(errorMessage);
             } finally {
                 // Reset button state
                 submitButton.disabled = false;
