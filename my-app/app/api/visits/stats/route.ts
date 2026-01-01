@@ -50,6 +50,20 @@ export async function GET(request: NextRequest) {
       .select('*', { count: 'exact', head: true })
       .eq('converted', true);
     
+    if (convertedError) {
+      console.error('Converted visits count error:', convertedError);
+    }
+    
+    // Get bounce rate (visits with duration < 10 seconds)
+    const { count: bouncedVisits, error: bounceError } = await supabase
+      .from('visits')
+      .select('*', { count: 'exact', head: true })
+      .lt('visit_duration', 10);
+    
+    if (bounceError) {
+      console.error('Bounce visits count error:', bounceError);
+    }
+    
     // Use the higher of the two for conversion count to be safe
     // Sometimes lead is captured but visit not updated, or vice-versa
     const effectiveConvertedCount = Math.max(totalLeads || 0, convertedVisits || 0);
